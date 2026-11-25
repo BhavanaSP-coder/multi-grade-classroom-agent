@@ -1,0 +1,25 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Hindi
+Grade: 1
+Unit: स्वर (Hindi Vowels)
+
+Learning outcomes (demo)
+- Recognises and says the Hindi vowels अ आ इ ई उ ऊ ऋ ए ऐ ओ औ.
+- Writes the vowels with correct shape.
+- Recognises simple words such as कमल, जल, घर.
+- Recites short Hindi rhymes with actions.
+
+Suggested low-resource activities (demo)
+1. Vowel chart song: sing and point to each vowel.
+2. Air writing: children write the vowel in the air and then on the slate.
+3. Picture match: match pictures to words like कमल and घर.
+4. Rhyme with actions.
+
+Assessment ideas (demo)
+- Oral: say the vowel the teacher points to.
+- Write अ आ इ ई on the slate.
+- Circle the picture whose name begins with क.
+
+Teacher notes (demo)
+Hindi may be a new language for many children here; use gestures and pictures and do not expect fast progress.

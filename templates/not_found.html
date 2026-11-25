@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Page not found{% endblock %}
+{% block content %}
+<section class="card empty-state">
+  <strong>Page not found</strong>
+  <p>The page you were looking for does not exist or has been removed.</p>
+  <a class="btn btn-primary" href="{{ url_for('dashboard') }}">Go to the dashboard</a>
+</section>
+{% endblock %}

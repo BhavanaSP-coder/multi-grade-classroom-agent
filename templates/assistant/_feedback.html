@@ -1,0 +1,99 @@
+{% from "components/icons.html" import icon %}
+<div class="grid-2">
+  <section class="card" aria-labelledby="fb-title">
+    <header class="card-header">
+      <div>
+        <h2 class="card-title" id="fb-title">Record how a period went</h2>
+        <p class="card-subtitle">A minute after class is enough. The assistant uses these notes to suggest better timings; it never changes your timetable on its own.</p>
+      </div>
+    </header>
+    <form class="card-body stack" method="post" action="{{ url_for('assistant.feedback', cid=p.id) }}" id="feedback-form">
+      <div class="form-grid">
+        <div class="field">
+          <label class="field-label" for="fb-date">Date</label>
+          <input class="input" type="date" id="fb-date" name="date">
+        </div>
+        <div class="field">
+          <label class="field-label" for="fb-day">Day</label>
+          <select class="input" id="fb-day" name="day">{% for d in p.working_days %}<option>{{ d }}</option>{% endfor %}</select>
+        </div>
+        <div class="field">
+          <label class="field-label" for="fb-period">Period</label>
+          <select class="input" id="fb-period" name="period">{% for per in ctx.periods %}<option value="{{ per.index }}">P{{ per.index }} · {{ fmt12(per.start) }}</option>{% endfor %}</select>
+        </div>
+        <div class="field span-all">
+          <label class="field-label" for="fb-subject">Subject</label>
+          <select class="input" id="fb-subject" name="subject">{% for s in p.subjects %}<option>{{ s.name }}</option>{% endfor %}</select>
+        </div>
+      </div>
+
+      {% for key, label, help in [('understanding', 'Understanding', 'How well did students understand?'), ('engagement', 'Engagement', 'How involved were they?'), ('concentration', 'Concentration', 'How focused were they?')] %}
+        <fieldset class="field">
+          <legend class="field-label">{{ label }} <span class="field-hint">· {{ help }}</span></legend>
+          <div class="rating">
+            {% for lvl in [1, 2, 3, 4, 5] %}
+              <label class="chip"><input type="radio" name="{{ key }}" value="{{ lvl }}" {{ 'checked' if lvl == 3 }}><span>{{ lvl }} · {{ ['Very low', 'Low', 'OK', 'Good', 'Very good'][lvl - 1] }}</span></label>
+            {% endfor %}
+          </div>
+        </fieldset>
+      {% endfor %}
+
+      <label class="checkbox"><input type="checkbox" name="took_longer" value="1"><span>The topic took longer than expected</span></label>
+      <div class="field">
+        <label class="field-label" for="fb-success">What worked well?</label>
+        <input class="input" id="fb-success" name="successful_activity" maxlength="300" placeholder="e.g. Story-based warm-up">
+      </div>
+      <div class="field">
+        <label class="field-label" for="fb-notes">Notes</label>
+        <textarea class="input" id="fb-notes" name="notes" maxlength="500" rows="2"></textarea>
+      </div>
+      <div><button class="btn btn-primary">Save feedback</button></div>
+    </form>
+  </section>
+
+  <section class="card" aria-labelledby="learned-title">
+    <header class="card-header"><h2 class="card-title" id="learned-title">What the assistant has learned</h2></header>
+    <div class="card-body stack">
+      {% if ctx.insights.messages %}
+        <ul class="small">{% for m in ctx.insights.messages %}<li>{{ m }}</li>{% endfor %}</ul>
+      {% else %}
+        <p class="small muted">Nothing yet. Patterns appear after at least two entries for the same period, or for the same subject at the same time of day.</p>
+      {% endif %}
+
+      {% if ctx.insights.successes %}
+        <div class="stack-sm">
+          <h3 class="section-title">Successful activities</h3>
+          <ul class="small">{% for s in ctx.insights.successes[-6:] %}<li>{{ s }}</li>{% endfor %}</ul>
+        </div>
+      {% endif %}
+
+      <div class="stack-sm">
+        <h3 class="section-title">History ({{ p.feedback|length }})</h3>
+        {% if p.feedback %}
+          <div class="table-wrap">
+            <table class="table">
+              <thead><tr><th scope="col">Date</th><th scope="col">Period</th><th scope="col">Subject</th><th scope="col"><abbr title="Understanding / Engagement / Concentration">U / E / C</abbr></th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+              <tbody>
+                {% for f in p.feedback|reverse %}
+                  <tr>
+                    <td>{{ f.date }}</td><td>{{ f.day }} P{{ f.period }}</td>
+                    <td>{{ f.subject }}{% if f.took_longer %} <span class="badge badge-warning">Took longer</span>{% endif %}</td>
+                    <td>{{ f.understanding }} / {{ f.engagement }} / {{ f.concentration }}</td>
+                    <td>
+                      <form method="post" action="{{ url_for('assistant.delete_feedback', cid=p.id, fid=f.id) }}"
+                            data-confirm="Delete this feedback entry?" data-confirm-ok="Delete">
+                        <button class="btn btn-icon" aria-label="Delete feedback for {{ f.day }} P{{ f.period }}">{{ icon('trash') }}</button>
+                      </form>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <p class="small muted">No feedback recorded yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+</div>

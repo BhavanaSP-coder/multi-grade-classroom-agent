@@ -1,0 +1,25 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Computer Science
+Grade: 1
+Unit: What Is a Computer?
+
+Learning outcomes (demo)
+- Identifies a computer and its main parts: monitor, keyboard, mouse, CPU.
+- Names places where computers are used: bank, shop, hospital, school.
+- Tells the difference between a computer and other machines.
+- Handles devices gently when available.
+
+Suggested low-resource activities (demo)
+1. Picture cards: match each computer part to its name.
+2. Paper keyboard: children press letters on a drawn keyboard.
+3. Where are computers? Children share where they have seen computers or mobile phones.
+4. Machine sorting: fan, computer, bicycle, mobile phone.
+
+Assessment ideas (demo)
+- Point to the mouse in the picture.
+- Oral: Where have you seen a computer?
+- Name two parts of a computer.
+
+Teacher notes (demo)
+These lessons work without a computer; use pictures and paper models if no device is available.

@@ -1,0 +1,25 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Computer Science
+Grade: 2
+Unit: Following Instructions in Order (Sequences)
+
+Learning outcomes (demo)
+- Follows step-by-step instructions in the correct order.
+- Puts the steps of a daily task in order (brushing teeth, making tea).
+- Understands that computers also follow instructions in order.
+- Uses a mouse and keyboard if a device is available.
+
+Suggested low-resource activities (demo)
+1. Robot teacher: children give the teacher step-by-step instructions to walk to the door.
+2. Order the steps: picture cards of planting a seed arranged in order.
+3. Sequence dance: follow a sequence of moves (clap, jump, turn).
+4. Mouse practice on a device if available.
+
+Assessment ideas (demo)
+- Put the steps of brushing teeth in order.
+- Oral: What happens if steps are in the wrong order?
+- Give three instructions to move a friend to the board.
+
+Teacher notes (demo)
+Unplugged activities teach computational thinking even without computers.

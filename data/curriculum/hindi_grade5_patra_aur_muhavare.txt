@@ -1,0 +1,25 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Hindi
+Grade: 5
+Unit: पत्र लेखन और मुहावरे (Letter Writing and Idioms)
+
+Learning outcomes (demo)
+- Writes a short informal letter (पत्र) in the correct format.
+- Uses common मुहावरे (idioms) in sentences with their meaning.
+- Writes a short paragraph (अनुच्छेद) on a familiar topic.
+- Uses विशेषण (adjectives) to describe people and things.
+
+Suggested low-resource activities (demo)
+1. Letter model: read a sample letter and label its parts.
+2. Idiom act: groups act out a मुहावरा for others to guess.
+3. Describe a friend using three विशेषण.
+4. Paragraph on 'मेरा गाँव' (my village).
+
+Assessment ideas (demo)
+- Write a letter to your friend about a festival.
+- Use one मुहावरा in a sentence.
+- Write five sentences on मेरा गाँव.
+
+Teacher notes (demo)
+Give a model paragraph first and discuss how it begins and ends.

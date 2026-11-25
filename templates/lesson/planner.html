@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% from "components/icons.html" import icon %}
+{% block title %}Lesson Planner{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/lesson.css') }}">{% endblock %}
+
+{% macro field_error(name) -%}
+  <p class="field-error" id="{{ name }}-error" data-error-for="{{ name }}">{{ field_errors.get(name, '') }}</p>
+{%- endmacro %}
+
+{% block content %}
+<header class="page-header">
+  <div>
+    <h1>Lesson Planner</h1>
+    <p>One topic, every grade at its own level - with activities, independent worksheets, quizzes,
+      a teacher rotation timetable and a printable packet.</p>
+  </div>
+</header>
+
+<div class="with-aside">
+  <form class="card planner-form" id="lesson-form" method="post" action="{{ url_for('generate') }}" novalidate
+        data-loading="Generating your lesson…"
+        data-loading-text="Searching the curriculum and writing materials for each grade. This usually takes 20-60 seconds.">
+
+    {% if errors %}
+      <div class="card-body">
+        <div class="alert alert-error" role="alert">
+          <div class="alert-body">
+            <p class="alert-title">Please fix the following:</p>
+            <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if not api_key_set %}
+      <div class="card-body">
+        <div class="alert alert-warning"><p class="alert-body"><strong>Groq API key missing.</strong>
+          Add <code>GROQ_API_KEY=...</code> to the <code>.env</code> file and restart the app before generating.</p></div>
+      </div>
+    {% endif %}
+
+    <div class="card-body stack">
+      <h2 class="card-title">Lesson details</h2>
+      <div class="form-grid">
+        <div class="field span-all">
+          <label class="field-label" for="topic">Topic</label>
+          <input class="input {{ 'is-invalid' if field_errors.topic }}" id="topic" name="topic" type="text" required
+                 maxlength="{{ cfg.TOPIC_MAX_LEN }}" value="{{ form.topic }}" placeholder="e.g. Fractions, Plants around us, Money"
+                 aria-describedby="topic-error">
+          {{ field_error('topic') }}
+        </div>
+        <div class="field">
+          <label class="field-label" for="subject">Subject</label>
+          <select class="input {{ 'is-invalid' if field_errors.subject }}" id="subject" name="subject" aria-describedby="subject-error">
+            {% for s in subjects %}<option value="{{ s }}" {{ 'selected' if form.subject == s }}>{{ s }}</option>{% endfor %}
+          </select>
+          {{ field_error('subject') }}
+        </div>
+        <div class="field">
+          <label class="field-label" for="duration">Class duration</label>
+          <span class="input-suffix">
+            <input class="input {{ 'is-invalid' if field_errors.duration }}" id="duration" name="duration" type="number"
+                   min="{{ cfg.MIN_DURATION }}" max="{{ cfg.MAX_DURATION }}" step="1" required value="{{ form.duration }}"
+                   aria-describedby="duration-error duration-hint"><span>min</span>
+          </span>
+          <p class="field-hint" id="duration-hint">{{ cfg.MIN_DURATION }}-{{ cfg.MAX_DURATION }} minutes</p>
+          {{ field_error('duration') }}
+        </div>
+        <div class="field">
+          <label class="field-label" for="language">Output language</label>
+          <select class="input" id="language" name="language" aria-describedby="language-error">
+            {% for code, label in languages.items() %}<option value="{{ code }}" {{ 'selected' if form.language == code }}>{{ label }}</option>{% endfor %}
+          </select>
+          {{ field_error('language') }}
+        </div>
+      </div>
+
+      <fieldset class="field" aria-describedby="grades-error">
+        <legend class="field-label">Grades in the room</legend>
+        <div class="grade-picker" data-grade-picker>
+          {% for g in grades %}
+            <label class="chip"><input type="checkbox" name="grades" value="{{ g }}" {{ 'checked' if g in form.grades or g|string in form.grades }}><span>Grade {{ g }}</span></label>
+          {% endfor %}
+          <button type="button" class="btn btn-ghost btn-sm" data-select-all-grades>Select all</button>
+        </div>
+        {{ field_error('grades') }}
+      </fieldset>
+
+      {% if form.attention_hint %}
+        <input type="hidden" name="attention_hint" value="{{ form.attention_hint }}">
+        <p class="attention-note">Planned from the Adaptive Classroom Assistant for a period your class usually finds
+          <strong>{{ form.attention_hint }}</strong> attention. Activities will be pitched to suit it.</p>
+      {% endif %}
+    </div>
+
+    <div class="card-body">
+      {% set acc = form.accessibility %}
+      {% include "lesson/_accessibility.html" %}
+    </div>
+
+    <footer class="card-footer form-actions">
+      <button type="submit" class="btn btn-primary" data-submit>Generate lesson</button>
+      <span class="small muted">Uses your curriculum library and Groq. You can edit everything afterwards.</span>
+    </footer>
+  </form>
+
+  <aside class="stack">
+    <section class="card">
+      <div class="card-body stack-sm">
+        <h2 class="card-title">Try a sample</h2>
+        <p class="small muted">Fractions · Grades 1-5 · 45 minutes · English</p>
+        <form method="post" action="{{ url_for('sample') }}" data-loading="Generating the sample lesson…"
+              data-loading-text="This usually takes 20-60 seconds.">
+          <button type="submit" class="btn btn-secondary btn-block">Load Sample Lesson</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="card">
+      <header class="card-header">
+        <div>
+          <h2 class="card-title">Curriculum in use</h2>
+          <p class="card-subtitle">{{ library.files|length }} files · {{ library.total_chunks }} passages</p>
+        </div>
+      </header>
+      <div class="card-body">
+        {% if library.files %}
+          <ul class="list-plain library-summary">
+            {% for f in library.files[:6] %}
+              <li><span class="name" title="{{ f.name }}">{{ f.name }}</span>
+                <span class="cluster">{% if f.is_demo %}<span class="badge badge-warning">Demo</span>{% endif %}<span class="badge">{{ 'Grade ' ~ f.grade if f.grade else 'All' }}</span></span></li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="small muted">No curriculum files yet - lessons will use general grade-level practice.</p>
+        {% endif %}
+        <p class="mt-3 small"><a href="{{ url_for('curriculum') }}">Manage curriculum library →</a></p>
+      </div>
+    </section>
+  </aside>
+</div>
+{% endblock %}
+
+{% block scripts %}<script src="{{ url_for('static', filename='js/lesson.js') }}"></script>{% endblock %}

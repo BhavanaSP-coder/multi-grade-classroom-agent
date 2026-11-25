@@ -1,0 +1,25 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Kannada
+Grade: 4
+Unit: ನಾಮಪದ ಮತ್ತು ಕ್ರಿಯಾಪದ (Nouns and Verbs)
+
+Learning outcomes (demo)
+- Identifies ನಾಮಪದ (nouns) and ಕ್ರಿಯಾಪದ (verbs) in sentences.
+- Changes words between ಏಕವಚನ and ಬಹುವಚನ (singular and plural).
+- Reads a lesson and answers questions in full sentences.
+- Uses new words from the lesson in their own sentences.
+
+Suggested low-resource activities (demo)
+1. Word sort: sort word cards into ನಾಮಪದ and ಕ್ರಿಯಾಪದ.
+2. Singular-plural game: teacher says ಮರ, children say ಮರಗಳು.
+3. Act the verb: a child acts ಓಡು or ತಿನ್ನು and others write the word.
+4. New word wall: add five new words from each lesson.
+
+Assessment ideas (demo)
+- Underline the ನಾಮಪದ in two sentences.
+- Write the plural of ಹಸು and ಮನೆ.
+- Answer two questions about the lesson in full sentences.
+
+Teacher notes (demo)
+Use examples from children's own speech to explain grammar terms.

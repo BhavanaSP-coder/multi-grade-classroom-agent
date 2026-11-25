@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% from "components/icons.html" import icon %}
+{% block title %}Dashboard{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+
+{% block content %}
+<header class="page-header welcome">
+  <div>
+    <h1>Welcome back</h1>
+    <p>Plan one lesson for several grades at once, build a timetable around when your class focuses best,
+      and keep your curriculum documents in one place.</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('planner') }}">{{ icon('plus') }}New lesson</a>
+</header>
+
+<div class="stack-lg">
+  <section aria-labelledby="stats-title">
+    <h2 id="stats-title" class="sr-only">Your data</h2>
+    <dl class="stats">
+      <div class="card stat">
+        <dt>Lessons generated</dt>
+        <dd>{{ stats.lessons }}</dd>
+      </div>
+      <div class="card stat">
+        <dt>Curriculum files</dt>
+        <dd>{{ stats.curriculum_files }}</dd>
+        <p class="stat-note">{{ stats.curriculum_chunks }} indexed passages</p>
+      </div>
+      <div class="card stat">
+        <dt>Classes</dt>
+        <dd>{{ stats.classes }}</dd>
+        <p class="stat-note">{{ stats.approved }} with an approved timetable</p>
+      </div>
+      <div class="card stat">
+        <dt>Timetables awaiting approval</dt>
+        <dd>{{ stats.pending }}</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section aria-labelledby="actions-title">
+    <h2 id="actions-title" class="section-title spaced">Quick actions</h2>
+    <div class="quick-actions">
+      <a class="card quick-action" href="{{ url_for('planner') }}">
+        <span class="quick-action-icon">{{ icon('lesson') }}</span>
+        <h3>Generate a lesson</h3>
+        <p>One topic for Grades 1-5 with activities, worksheets, quizzes and a teacher rotation.</p>
+        <span class="go">Open planner →</span>
+      </a>
+      <a class="card quick-action" href="{{ url_for('assistant.dashboard') }}">
+        <span class="quick-action-icon">{{ icon('calendar') }}</span>
+        <h3>Adaptive timetable</h3>
+        <p>Place demanding subjects in the periods your class is usually most attentive.</p>
+        <span class="go">Open assistant →</span>
+      </a>
+      <a class="card quick-action" href="{{ url_for('curriculum') }}">
+        <span class="quick-action-icon">{{ icon('library') }}</span>
+        <h3>Curriculum library</h3>
+        <p>Upload syllabus PDFs or text files so lessons are grounded in your curriculum.</p>
+        <span class="go">Manage files →</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="grid-2">
+    <section class="card" aria-labelledby="recent-title">
+      <header class="card-header">
+        <div>
+          <h2 id="recent-title" class="card-title">Recent lessons</h2>
+          <p class="card-subtitle">The last {{ recent|length if recent else 'few' }} lessons you generated.</p>
+        </div>
+      </header>
+      {% if recent %}
+        <ul class="recent-list">
+          {% for l in recent %}
+            <li>
+              <div>
+                <a href="{{ url_for('lesson', lesson_id=l.lesson_id) }}">{{ l.title }}</a>
+                <p class="recent-meta">{{ l.subject }} · Grades {{ l.grades|join(', ') }} · {{ l.language }}{% if l.created_at %} · {{ l.created_at }}{% endif %}</p>
+              </div>
+              {% if l.accessible %}<span class="badge badge-primary">Accessible sheets</span>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="empty-state">
+          <strong>No lessons yet</strong>
+          <p>Generated lessons appear here so you can reopen and download them.</p>
+          <a class="btn btn-secondary" href="{{ url_for('planner') }}">Plan your first lesson</a>
+        </div>
+      {% endif %}
+    </section>
+
+    <section class="card" aria-labelledby="classes-title">
+      <header class="card-header">
+        <div>
+          <h2 id="classes-title" class="card-title">Classes</h2>
+          <p class="card-subtitle">Timetables in the Adaptive Classroom Assistant.</p>
+        </div>
+      </header>
+      {% if classes %}
+        <ul class="recent-list">
+          {% for c in classes %}
+            <li>
+              <div>
+                <a href="{{ url_for('assistant.dashboard', **{'class': c.id}) }}">{{ c.name }}</a>
+                <p class="recent-meta">{{ c.num_students }} students · {{ c.num_periods }} periods · {{ c.subjects|length }} subjects</p>
+              </div>
+              {% if c.proposal %}<span class="badge badge-warning">Proposal to review</span>
+              {% elif c.current %}<span class="badge badge-success">Timetable approved</span>
+              {% else %}<span class="badge">No timetable</span>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="empty-state">
+          <strong>No classes yet</strong>
+          <p>Add a class to set its school day, subjects and attention pattern.</p>
+          <a class="btn btn-secondary" href="{{ url_for('assistant.dashboard') }}">Add a class</a>
+        </div>
+      {% endif %}
+    </section>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+# ---------------------------------------------------------------
+# Multi-Grade Classroom Agent - Python dependencies
+# Target: Python 3.10 - 3.12 (3.11 / 3.12 recommended)
+# ---------------------------------------------------------------
+
+# --- Web app ---
+Flask>=3.0,<4
+python-dotenv>=1.0,<2
+
+# --- Modern LangChain (split packages, LCEL; no LLMChain / initialize_agent) ---
+langchain-core>=1.0,<2
+langchain-groq>=1.0,<2
+langchain-chroma>=1.0,<2
+langchain-huggingface>=1.0,<2
+langchain-text-splitters>=1.0,<2
+
+# --- Vector store + local embeddings (no API key needed) ---
+chromadb>=1.0,<2
+sentence-transformers>=3.0
+
+# --- Document loading (PDF curriculum files, read directly with pypdf) ---
+pypdf>=5.0
+
+# --- Structured outputs ---
+pydantic>=2.7,<3
+
+# --- Printable PDF packets ---
+reportlab>=4.2
+
+# --- Testing ---
+pytest>=8.0

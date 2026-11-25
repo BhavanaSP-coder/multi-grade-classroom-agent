@@ -1,0 +1,62 @@
+{# Multi-grade teacher rotation timetable (one teacher, several grades, one room). #}
+{% set mode_label = {'with_teacher': 'With teacher', 'independent': 'On their own', 'whole_class': 'All together'} %}
+<section class="card" id="timetable" aria-labelledby="rotation-title">
+  <header class="card-header">
+    <div>
+      <h2 class="card-title" id="rotation-title">Teacher rotation timetable</h2>
+      <p class="card-subtitle">Who the teacher is with in each block, and what every other grade does at the same time.</p>
+    </div>
+    {% if r.validation.ok %}
+      <span class="badge badge-success">Checked: covers 0-{{ r.request.duration }} min, no gaps or overlaps</span>
+    {% else %}
+      <span class="badge badge-danger">Timetable check failed</span>
+    {% endif %}
+  </header>
+  <div class="card-body stack">
+    {% if r.validation.errors %}
+      <div class="alert alert-error"><ul class="alert-body">{% for e in r.validation.errors %}<li>{{ e }}</li>{% endfor %}</ul></div>
+    {% endif %}
+    {% if r.validation.warnings %}
+      <div class="alert alert-warning"><ul class="alert-body">{% for w in r.validation.warnings %}<li>{{ w }}</li>{% endfor %}</ul></div>
+    {% endif %}
+
+    <div class="table-wrap">
+      <table class="table rotation">
+        <thead>
+          <tr>
+            <th scope="col">Time</th>
+            <th scope="col">Teacher is with</th>
+            {% for g in r.request.grades %}<th scope="col">Grade {{ g }}</th>{% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in r.timetable.blocks %}
+            {% set bi = loop.index0 %}
+            <tr>
+              <th scope="row">{{ b.time_label }}<span class="period-time">{{ b.minutes }} min · {{ b.title }}</span></th>
+              <td><strong>{{ b.teacher_label }}</strong></td>
+              {% for g in r.request.grades %}
+                {% set a = b.assignment_for(g) %}
+                {% if a %}
+                  <td class="mode-{{ a.mode }}">
+                    <span class="mode-label">{{ mode_label[a.mode] }}</span>
+                    <span class="lang-text" data-path="timetable.blocks.{{ bi }}.assignments.{{ b.assignments.index(a) }}.task">{{ a.task }}</span>
+                  </td>
+                {% else %}<td>-</td>{% endif %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if r.timetable.teacher_tips %}
+      <div class="stack-sm">
+        <h3 class="section-title">Tips for managing the rotation</h3>
+        <ul class="small lang-text">
+          {% for tip in r.timetable.teacher_tips %}<li data-path="timetable.teacher_tips.{{ loop.index0 }}">{{ tip }}</li>{% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+</section>

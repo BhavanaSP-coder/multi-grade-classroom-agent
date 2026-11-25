@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% from "components/icons.html" import icon %}
+{% block title %}Adaptive Classroom Assistant{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/assistant.css') }}">{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div>
+    <h1>Adaptive Classroom Assistant</h1>
+    <p>Builds a weekly timetable that puts demanding subjects in the periods your class is usually most attentive,
+      learns from your feedback and always asks before changing a timetable.</p>
+  </div>
+  <form class="new-class no-print" method="post" action="{{ url_for('assistant.new_class') }}">
+    <div class="field">
+      <label class="field-label" for="new-grade">Grade</label>
+      <select class="input" id="new-grade" name="grade">{% for g in range(1, 13) %}<option {{ 'selected' if g == 4 }}>{{ g }}</option>{% endfor %}</select>
+    </div>
+    <div class="field">
+      <label class="field-label" for="new-section">Section</label>
+      <input class="input" id="new-section" name="section" value="A" maxlength="10">
+    </div>
+    <button class="btn btn-primary">{{ icon('plus') }}Add class</button>
+  </form>
+</header>
+
+{% if classes %}
+  <nav class="class-switcher no-print" aria-label="Classes">
+    {% for c in classes %}
+      <a href="{{ url_for('assistant.dashboard', **{'class': c.id}) }}" {% if p and c.id == p.id %}aria-current="page"{% endif %}>
+        {{ c.name }}{% if c.proposal %}<span class="pending-dot" title="Proposal waiting for approval"></span>{% endif %}</a>
+    {% endfor %}
+  </nav>
+{% endif %}
+
+{% if not p %}
+  <section class="card empty-state mt-4">
+    <strong>No classes yet</strong>
+    <p>Add a class above. You'll get an editable starting setup - school hours, breaks, subjects and an
+      attention pattern you can change with a click.</p>
+  </section>
+{% else %}
+  <div class="meta-list mt-4">
+    <span><strong>{{ p.name }}</strong></span>
+    <span>{{ p.num_students }} students</span>
+    <span>{{ p.start_time }}-{{ p.end_time }}</span>
+    <span>{{ p.working_days|join(', ') }}</span>
+    <span>{{ p.num_periods }} × {{ p.period_minutes }} min</span>
+  </div>
+
+  <div class="tabs mt-4 no-print" role="tablist" aria-label="Class sections">
+    {% for key, label in [('setup', '1. Setup'), ('timetable', '2. Timetable'), ('feedback', '3. Feedback & learning')] %}
+      <button type="button" class="tab" role="tab" id="atab-{{ key }}" aria-controls="apanel-{{ key }}" data-atab="{{ key }}"
+              aria-selected="{{ 'true' if tab == key else 'false' }}" {% if tab != key %}tabindex="-1"{% endif %}>{{ label }}</button>
+    {% endfor %}
+  </div>
+
+  <section class="tab-panel" id="apanel-setup" role="tabpanel" aria-labelledby="atab-setup" data-apanel="setup" {% if tab != 'setup' %}hidden{% endif %}>
+    {% include "assistant/_setup.html" %}
+  </section>
+  <section class="tab-panel" id="apanel-timetable" role="tabpanel" aria-labelledby="atab-timetable" data-apanel="timetable" {% if tab != 'timetable' %}hidden{% endif %}>
+    {% include "assistant/timetable.html" %}
+  </section>
+  <section class="tab-panel" id="apanel-feedback" role="tabpanel" aria-labelledby="atab-feedback" data-apanel="feedback" {% if tab != 'feedback' %}hidden{% endif %}>
+    {% include "assistant/_feedback.html" %}
+  </section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}<script src="{{ url_for('static', filename='js/assistant.js') }}"></script>{% endblock %}

@@ -1,0 +1,25 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Hindi
+Grade: 3
+Unit: कहानी और संज्ञा (Stories and Nouns)
+
+Learning outcomes (demo)
+- Reads short stories and poems in Hindi with understanding.
+- Identifies संज्ञा (nouns) for people, places and things.
+- Answers simple questions about a story.
+- Writes three simple sentences in Hindi.
+
+Suggested low-resource activities (demo)
+1. Story reading: teacher reads, children repeat each sentence.
+2. Noun hunt: underline संज्ञा words in the story.
+3. Who, where, what: children answer questions in pairs.
+4. Picture sentences: write one sentence for each picture.
+
+Assessment ideas (demo)
+- Underline the संज्ञा: राम बाज़ार गया।
+- Answer: कहानी में कौन था?
+- Write a sentence about your school.
+
+Teacher notes (demo)
+Read slowly and check understanding often; explain new words with pictures.

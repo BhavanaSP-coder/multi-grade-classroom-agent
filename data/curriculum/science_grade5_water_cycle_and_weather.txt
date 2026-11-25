@@ -1,0 +1,25 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Science
+Grade: 5
+Unit: The Water Cycle and Weather
+
+Learning outcomes (demo)
+- Explains evaporation and condensation using daily-life examples.
+- Draws and explains the water cycle: sea, clouds, rain, rivers.
+- Measures rainfall with a simple rain gauge.
+- Relates weather changes to farming activities in the village.
+
+Suggested low-resource activities (demo)
+1. Condensation demo: hold a cold steel plate over a vessel of hot water and observe droplets.
+2. Water cycle in a bag: water in a sealed plastic bag taped to a sunny window; observe drops forming.
+3. Rain gauge: make one from a bottle and a scale and record rainfall for a week.
+4. Farmer interview: ask how rain decides the sowing season.
+
+Assessment ideas (demo)
+- Label the water cycle: evaporation, condensation, rain.
+- Why do drops form on a cold glass of water?
+- Read the class rainfall table and say which day had most rain.
+
+Teacher notes (demo)
+Let students explain the water cycle to younger grades as peer teachers.

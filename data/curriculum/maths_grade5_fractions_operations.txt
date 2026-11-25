@@ -1,0 +1,27 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Mathematics
+Grade: 5
+Unit: Fractions - Addition, Subtraction and Applications
+
+Learning outcomes (demo)
+- Adds and subtracts fractions with the same denominator (2/7 + 3/7 = 5/7).
+- Adds and subtracts simple fractions with different denominators by using equivalent fractions (1/2 + 1/4 = 3/4).
+- Converts between improper fractions and mixed numbers (7/4 = 1 3/4).
+- Relates fractions to decimals for tenths and halves (1/2 = 0.5, 3/10 = 0.3).
+- Solves multi-step word problems on fractions in contexts such as farming, cooking, money and distance, and explains the steps in writing.
+
+Suggested low-resource activities (demo)
+1. Farm plot problem: draw a field on the blackboard divided into 8 equal plots. 3/8 has ragi, 2/8 has groundnut. What fraction is planted? What fraction is empty?
+2. Recipe fractions: a recipe needs 1/2 cup of dal and 1/4 cup of rice. How much in total? Use paper strips to add.
+3. Mixed number line: draw a number line from 0 to 3 marked in quarters. Children locate 5/4, 1 1/2 and 9/4.
+4. Peer teaching: Grade 5 students explain one fraction problem to a younger student using a drawing (useful in multi-grade rooms).
+
+Assessment ideas (demo)
+- 3/10 + 4/10 = ?
+- 1/2 + 1/4 = ? Show with a drawing.
+- Write 11/4 as a mixed number.
+- A farmer used 2/5 of his land for paddy and 1/5 for vegetables. What fraction of the land is left?
+
+Teacher notes (demo)
+Before adding fractions with different denominators, revise equivalent fractions from Grade 4. Ask students to write one sentence explaining each step. Grade 5 students can act as peer helpers for younger grades during independent work time.

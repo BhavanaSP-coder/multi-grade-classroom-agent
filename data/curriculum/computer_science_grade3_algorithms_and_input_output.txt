@@ -1,0 +1,25 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Computer Science
+Grade: 3
+Unit: Algorithms, Input and Output
+
+Learning outcomes (demo)
+- Writes simple algorithms (steps) to solve everyday problems.
+- Identifies input devices (keyboard, mouse, microphone) and output devices (monitor, printer, speaker).
+- Finds and continues patterns.
+- Explains that a computer needs input to give output.
+
+Suggested low-resource activities (demo)
+1. Algorithm for making lemon juice written as numbered steps.
+2. Input or output sorting with picture cards.
+3. Pattern blocks: continue colour or shape patterns.
+4. Human computer: one child gives input words, another 'outputs' them on the board.
+
+Assessment ideas (demo)
+- Write four steps to wash your hands.
+- Sort: keyboard, speaker, mouse, printer into input or output.
+- Continue the pattern: circle, square, circle, ___.
+
+Teacher notes (demo)
+Link patterns with Maths lessons.

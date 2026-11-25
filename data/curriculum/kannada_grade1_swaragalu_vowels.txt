@@ -1,0 +1,25 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Kannada
+Grade: 1
+Unit: ಸ್ವರಗಳು (Kannada Vowels)
+
+Learning outcomes (demo)
+- Recognises and says the Kannada vowels ಅ ಆ ಇ ಈ ಉ ಊ ಋ ಎ ಏ ಐ ಒ ಓ ಔ.
+- Writes the vowels with correct shape and direction.
+- Recognises simple words such as ಅಮ್ಮ, ಅಪ್ಪ, ಮನೆ, ಮರ.
+- Listens to and recites simple Kannada rhymes with actions.
+
+Suggested low-resource activities (demo)
+1. Vowel song: sing the vowels together while pointing to a chart.
+2. Sand tray: trace each vowel in sand or with a wet finger on the slate.
+3. Picture match: match pictures of ಅಮ್ಮ and ಮನೆ to the first letter.
+4. Rhyme with actions in a circle.
+
+Assessment ideas (demo)
+- Oral: say the vowel the teacher points to.
+- Write ಅ ಆ ಇ ಈ on the slate.
+- Circle the word that starts with ಅ.
+
+Teacher notes (demo)
+Most children already speak Kannada at home; build on spoken words to teach letters.

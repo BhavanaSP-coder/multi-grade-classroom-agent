@@ -1,0 +1,135 @@
+{# Grade-wise materials. Elements with data-path are editable in "Edit content" mode. #}
+<section class="card" id="grades" aria-labelledby="grades-title">
+  <header class="card-header">
+    <div>
+      <h2 class="card-title" id="grades-title">Grade materials</h2>
+      <p class="card-subtitle">Objectives, teacher-led activity, independent worksheet and quiz for each grade.</p>
+    </div>
+  </header>
+  <div class="card-body">
+    <div class="tabs" role="tablist" aria-label="Grades">
+      {% for g in r.request.grades %}
+        <button type="button" class="tab" role="tab" id="tab-grade-{{ g }}" aria-controls="grade-{{ g }}"
+                aria-selected="{{ 'true' if loop.first else 'false' }}" {% if not loop.first %}tabindex="-1"{% endif %}>Grade {{ g }}</button>
+      {% endfor %}
+    </div>
+
+    {% for g in r.request.grades %}
+      {% set c = r.content_for(g) %}
+      {% set o = r.outline.objectives_for(g) %}
+      {% set a = r.accessible_for(g) %}
+      <article class="tab-panel grade-panel lang-text" id="grade-{{ g }}" role="tabpanel" aria-labelledby="tab-grade-{{ g }}"
+               data-answers-scope {% if not loop.first %}hidden{% endif %}>
+        <h3 class="print-only">Grade {{ g }}</h3>
+
+        {% if o %}
+          {% set oi = r.outline.grades.index(o) %}
+          <section class="objectives stack-sm" aria-label="Learning objectives for Grade {{ g }}">
+            <h4 class="section-title">Learning objectives</h4>
+            <ul>{% for x in o.objectives %}<li data-path="outline.grades.{{ oi }}.objectives.{{ loop.index0 }}">{{ x }}</li>{% endfor %}</ul>
+            <p class="small"><strong>Success criteria:</strong> <span data-path="outline.grades.{{ oi }}.success_criteria">{{ o.success_criteria }}</span></p>
+            {% if o.key_vocabulary %}<p class="small"><strong>Key words:</strong> {{ o.key_vocabulary|join(', ') }}</p>{% endif %}
+            <p class="xsmall muted"><strong>Curriculum alignment:</strong> {{ o.curriculum_alignment }}</p>
+          </section>
+        {% endif %}
+
+        {% if c %}
+          {% set ci = r.contents.index(c) %}
+          <div class="mt-4 split no-print">
+            <div class="cluster">
+              {% if c.source_labels %}<span class="badge badge-success">Grounded in {{ c.source_labels|join(', ') }}</span>
+              {% else %}<span class="badge badge-warning">No curriculum source used</span>{% endif %}
+              {% if a %}<a class="badge badge-primary" href="#g{{ g }}-accessible">Accessible worksheet below</a>{% endif %}
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" data-toggle-answers aria-pressed="false">Show answers</button>
+          </div>
+
+          <div class="materials">
+            <section class="material activity" aria-labelledby="g{{ g }}-activity">
+              <h3 id="g{{ g }}-activity">Activity · with teacher</h3>
+              <p class="lead" data-path="contents.{{ ci }}.activity_title">{{ c.activity_title }}</p>
+              <p class="xsmall muted" data-path="contents.{{ ci }}.activity_type">{{ c.activity_type }}</p>
+              <p class="mt-2"><strong>Materials:</strong> {{ c.materials|join(', ') }}</p>
+              <ol class="mt-2">
+                {% for s in c.activity_steps %}<li data-path="contents.{{ ci }}.activity_steps.{{ loop.index0 }}">{{ s }}</li>{% endfor %}
+              </ol>
+              <p class="tip"><span data-path="contents.{{ ci }}.teacher_tip">{{ c.teacher_tip }}</span></p>
+            </section>
+
+            <section class="material worksheet" aria-labelledby="g{{ g }}-worksheet">
+              <h3 id="g{{ g }}-worksheet">Worksheet · independent</h3>
+              <p class="lead" data-path="contents.{{ ci }}.worksheet_title">{{ c.worksheet_title }}</p>
+              <p class="muted" data-path="contents.{{ ci }}.worksheet_instructions">{{ c.worksheet_instructions }}</p>
+              <ol class="mt-2">
+                {% for t in c.worksheet_tasks %}
+                  <li><span data-path="contents.{{ ci }}.worksheet_tasks.{{ loop.index0 }}.task">{{ t.task }}</span>
+                    <span class="answer">Answer: <span data-path="contents.{{ ci }}.worksheet_tasks.{{ loop.index0 }}.answer">{{ t.answer }}</span></span></li>
+                {% endfor %}
+              </ol>
+            </section>
+
+            <section class="material quiz" aria-labelledby="g{{ g }}-quiz">
+              <h3 id="g{{ g }}-quiz">Quiz · {{ c.quiz|length }} questions</h3>
+              <ol>
+                {% for q in c.quiz %}
+                  {% set qi = loop.index0 %}
+                  <li><span data-path="contents.{{ ci }}.quiz.{{ qi }}.question">{{ q.question }}</span>
+                    {% if q.options %}
+                      <ul class="options">{% for opt in q.options %}<li>({{ 'abcd'[loop.index0] if loop.index0 < 4 else loop.index }}) <span data-path="contents.{{ ci }}.quiz.{{ qi }}.options.{{ loop.index0 }}">{{ opt }}</span></li>{% endfor %}</ul>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ol>
+              <div class="answer-key">
+                <p class="section-title">Answer key</p>
+                <ol>{% for q in c.quiz %}<li data-path="contents.{{ ci }}.quiz.{{ loop.index0 }}.answer">{{ q.answer }}</li>{% endfor %}</ol>
+              </div>
+            </section>
+          </div>
+
+          {% if a %}
+            {% set ai = r.accessible.index(a) %}
+            {% set s = r.request.accessibility %}
+            <section class="acc-preview" id="g{{ g }}-accessible" aria-label="Accessible worksheet for Grade {{ g }}">
+              <header class="no-print">
+                <strong>Accessible worksheet - teacher preview</strong>
+                <span class="xsmall muted">{{ s.enabled_labels|join(' · ') }}</span>
+              </header>
+              <div class="dys-sheet {{ 'dys-large' if s.large_font }} {{ 'dys-spaced' if s.extra_spacing }} {{ 'dys-plain' if s.reduced_clutter }}">
+                <h3>Grade {{ g }}: <span data-path="accessible.{{ ai }}.title">{{ a.title }}</span></h3>
+                <p>Name: ____________________ &nbsp; Date: __________</p>
+                <p class="dys-goal" data-path="accessible.{{ ai }}.goal">{{ a.goal }}</p>
+                <ul class="dys-tips">{% for t in a.how_to_use %}<li data-path="accessible.{{ ai }}.how_to_use.{{ loop.index0 }}">{{ t }}</li>{% endfor %}</ul>
+
+                <section class="dys-example">
+                  <h4>Example</h4>
+                  <p data-path="accessible.{{ ai }}.example.problem">{{ a.example.problem }}</p>
+                  <ol>{% for st in a.example.steps %}<li data-path="accessible.{{ ai }}.example.steps.{{ loop.index0 }}">{{ st }}</li>{% endfor %}</ol>
+                  <p><strong>Answer: <span data-path="accessible.{{ ai }}.example.answer">{{ a.example.answer }}</span></strong></p>
+                </section>
+
+                {% for q in a.questions %}
+                  {% set qi = loop.index0 %}
+                  <section class="dys-question {{ 'dys-separated' if s.one_question_per_section }}">
+                    <h4 data-path="accessible.{{ ai }}.questions.{{ qi }}.heading">{{ q.heading }}</h4>
+                    <ol>
+                      {% for st in q.steps %}<li data-path="accessible.{{ ai }}.questions.{{ qi }}.steps.{{ loop.index0 }}">{{ st|highlight(q.keywords, s.highlight_keywords) }}</li>{% endfor %}
+                    </ol>
+                    <p class="dys-q" data-path="accessible.{{ ai }}.questions.{{ qi }}.question">{{ q.question|highlight(q.keywords, s.highlight_keywords) }}</p>
+                    {% if q.visual_hint %}<p class="dys-hint">Hint: <span data-path="accessible.{{ ai }}.questions.{{ qi }}.visual_hint">{{ q.visual_hint }}</span></p>{% endif %}
+                    <div class="dys-lines" data-lines="{{ 5 if s.more_answer_space else 3 }}" aria-hidden="true"></div>
+                    {% if q.other_ways %}<p class="dys-other">Or: <span data-path="accessible.{{ ai }}.questions.{{ qi }}.other_ways">{{ q.other_ways }}</span></p>{% endif %}
+                    <span class="answer">Answer (teacher): <span data-path="accessible.{{ ai }}.questions.{{ qi }}.answer">{{ q.answer }}</span></span>
+                  </section>
+                {% endfor %}
+                <p class="dys-teacher-note no-print">Teacher note: <span data-path="accessible.{{ ai }}.teacher_note">{{ a.teacher_note }}</span></p>
+              </div>
+            </section>
+          {% endif %}
+        {% else %}
+          <p class="alert alert-error">No content was generated for Grade {{ g }}.</p>
+        {% endif %}
+      </article>
+    {% endfor %}
+  </div>
+</section>

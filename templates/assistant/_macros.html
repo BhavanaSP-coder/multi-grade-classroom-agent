@@ -1,0 +1,92 @@
+{# Macros for timetable versions (current / proposal). #}
+
+{% macro timetable_grid(v, target, p, ctx, lesson_link, fmt12, attention_label) %}
+  {% set changed = v.changes|map(attribute='slot')|list %}
+  {% set items = [] %}
+  {% for per in ctx.periods %}{% set _ = items.append((per.start, 'p', per)) %}{% endfor %}
+  {% for br in ctx.breaks %}{% set _ = items.append((br.start, 'b', br)) %}{% endfor %}
+  <div class="table-wrap">
+    <table class="table timetable" data-grid="{{ target }}">
+      <caption class="sr-only">{{ 'Proposed' if target == 'proposal' else 'Current' }} weekly timetable for {{ p.name }}</caption>
+      <thead>
+        <tr><th scope="col">Period</th>{% for d in p.working_days %}<th scope="col">{{ d }}</th>{% endfor %}</tr>
+      </thead>
+      <tbody>
+        {% for start, kind, it in items|sort(attribute='0') %}
+          {% if kind == 'b' %}
+            <tr class="break-row">
+              <th scope="row" class="xsmall muted">{{ fmt12(it.start) }}-{{ fmt12(it.end) }}</th>
+              <td colspan="{{ p.working_days|length }}">{{ it.name }}</td>
+            </tr>
+          {% else %}
+            {% set eff = ctx.insights.period_effective.get(it.index, it.base_attention) %}
+            <tr>
+              <th scope="row">
+                <span class="period-no">P{{ it.index }}</span>
+                <span class="period-time">{{ fmt12(it.start) }}-{{ fmt12(it.end) }}</span>
+                <span class="attention-tag att-{{ eff|round|int }}" title="Attention you observed{{ ' (adjusted by feedback)' if eff != it.base_attention }}">{{ attention_label(eff) }}</span>
+              </th>
+              {% for d in p.working_days %}
+                {% set c = v.cell(d, it.index) %}
+                {% if c %}
+                  {% set slot = d ~ ' P' ~ it.index %}
+                  <td class="cell load-{{ c.load or c.kind }}{{ ' changed' if slot in changed }}"
+                      data-key="{{ d }}-{{ it.index }}" data-target="{{ target }}" data-subject="{{ c.subject }}"
+                      data-kind="{{ c.kind }}" data-locked="{{ '1' if c.locked else '0' }}" data-label="{{ slot }}"
+                      data-lesson="{{ lesson_link(p, c) or '' }}" tabindex="0" aria-label="{{ slot }}: {{ c.subject }}">
+                    <span class="cell-subject">{{ 'Locked: ' if c.locked }}{{ c.subject }}</span>
+                    <span class="cell-meta">{% if c.kind == 'subject' %}{{ c.load|capitalize }} load{% elif c.kind == 'fixed' %}Fixed activity{% else %}Open period{% endif %}</span>
+                  </td>
+                {% else %}
+                  <td class="cell-empty field-error">Empty</td>
+                {% endif %}
+              {% endfor %}
+            </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endmacro %}
+
+{% macro version_badges(v) %}
+  <div class="version-badges">
+    {% if v.validation.ok %}<span class="badge badge-success">All hard constraints met</span>
+    {% else %}<span class="badge badge-danger">{{ v.validation.errors|length }} constraint error{{ 's' if v.validation.errors|length != 1 }}</span>{% endif %}
+    <span class="badge" title="Higher is better: attention match, feedback and balance">Score {{ '%.1f'|format(v.score) }}</span>
+    {% set m = v.validation.metrics %}
+    {% if m.high_load_periods %}<span class="badge badge-info">{{ m.high_load_in_high_attention }}/{{ m.high_load_periods }} high-load periods in attentive slots</span>{% endif %}
+  </div>
+{% endmacro %}
+
+{% macro why_panel(v) %}
+  {% set kind_label = {'placement': 'Placement', 'balance': 'Balance', 'feedback': 'Feedback', 'ai_advice': 'AI advice', 'constraint': 'Constraint', 'warning': 'Warning'} %}
+  <details class="disclosure mt-4" open>
+    <summary><span>Why this timetable?</span></summary>
+    <div class="disclosure-body stack">
+      <ul class="why-list">
+        {% for e in v.explanations %}
+          <li><span class="why-kind {{ 'warning' if e.kind == 'warning' }}">{{ kind_label[e.kind] }}</span><span>{{ e.text }}</span></li>
+        {% endfor %}
+      </ul>
+      {% if v.ai_summary %}
+        <div class="ai-summary">
+          <p class="section-title">AI summary · each sentence checked against the timetable{% if v.ai_dropped %} ({{ v.ai_dropped }} inconsistent sentence{{ 's' if v.ai_dropped != 1 }} removed){% endif %}</p>
+          <ul class="mt-2">{% for b in v.ai_summary %}<li>{{ b }}</li>{% endfor %}</ul>
+        </div>
+      {% endif %}
+      {% if v.validation.errors %}
+        <div class="alert alert-error"><div class="alert-body"><p class="alert-title">Constraint errors - the timetable is not valid until these are fixed</p>
+          <ul>{% for e in v.validation.errors %}<li>{{ e }}</li>{% endfor %}</ul></div></div>
+      {% endif %}
+      {% if v.validation.warnings %}
+        <div class="alert alert-warning"><div class="alert-body"><p class="alert-title">Things to consider</p>
+          <ul>{% for w in v.validation.warnings[:8] %}<li>{{ w }}</li>{% endfor %}</ul></div></div>
+      {% endif %}
+      {% if v.notes %}
+        <div class="alert alert-info"><div class="alert-body"><p class="alert-title">Notes and conflicts</p>
+          <ul>{% for n in v.notes %}<li>{{ n }}</li>{% endfor %}</ul></div></div>
+      {% endif %}
+    </div>
+  </details>
+{% endmacro %}

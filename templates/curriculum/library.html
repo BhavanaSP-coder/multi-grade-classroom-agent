@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% from "components/icons.html" import icon %}
+{% block title %}Curriculum Library{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/curriculum.css') }}">{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <div>
+    <h1>Curriculum Library</h1>
+    <p>Lessons are grounded in these documents. Each file is split into passages, embedded on this computer
+      and stored in the local vector store.</p>
+  </div>
+  <form method="post" action="{{ url_for('rebuild_index') }}" class="no-print"
+        data-confirm="Rebuild the vector store?" data-confirm-text="Every file in the library is re-read and indexed again. This can take a minute."
+        data-confirm-ok="Rebuild" data-loading="Rebuilding the vector store…" data-loading-text="Reading and embedding every curriculum file.">
+    <button class="btn btn-secondary">{{ icon('refresh') }}Rebuild vector store</button>
+  </form>
+</header>
+
+<div class="with-aside">
+  <section class="card" aria-labelledby="files-title">
+    <header class="card-header">
+      <div>
+        <h2 class="card-title" id="files-title">Files</h2>
+        <p class="library-totals mt-2">
+          <span><strong>{{ library.files|length }}</strong> files</span>
+          <span><strong>{{ library.total_chunks }}</strong> indexed passages</span>
+          {% if library.needs_sync %}<span class="badge badge-info">New or changed files are indexed before the next lesson</span>{% endif %}
+        </p>
+      </div>
+    </header>
+    {% if library.error %}<div class="card-body"><div class="alert alert-error"><p class="alert-body">{{ library.error }}</p></div></div>{% endif %}
+
+    {% if library.files %}
+      <div class="table-wrap flush">
+        <table class="table file-table">
+          <thead>
+            <tr><th scope="col">File</th><th scope="col">Type</th><th scope="col">Grade</th><th scope="col">Passages</th><th scope="col">Status</th><th scope="col"><span class="sr-only">Actions</span></th></tr>
+          </thead>
+          <tbody>
+            {% for f in library.files %}
+              <tr>
+                <td>
+                  <span class="file-name">{{ f.name }}</span>
+                  <span class="xsmall muted">{{ f.size_kb }} KB</span>
+                  {% if f.error %}<span class="file-error">{{ f.error }}</span>{% endif %}
+                </td>
+                <td><span class="badge">{{ f.type }}</span></td>
+                <td>{{ 'Grade ' ~ f.grade if f.grade else 'All grades' }}</td>
+                <td>{{ f.chunks if f.indexed else '-' }}</td>
+                <td class="cluster">
+                  {% if f.error %}<span class="badge badge-danger">Not usable</span>
+                  {% elif f.indexed %}<span class="badge badge-success">Indexed</span>
+                  {% else %}<span class="badge badge-info">Waiting</span>{% endif %}
+                  {% if f.is_demo %}<span class="badge badge-warning" title="Sample material written for this prototype, not an official syllabus">Demo</span>{% endif %}
+                </td>
+                <td class="actions">
+                  <form method="post" action="{{ url_for('delete_curriculum_file') }}"
+                        data-confirm="Delete {{ f.name }}?" data-confirm-text="The file and its indexed passages are removed. Lessons already generated are not changed."
+                        data-confirm-ok="Delete file">
+                    <input type="hidden" name="filename" value="{{ f.name }}">
+                    <button class="btn btn-icon" aria-label="Delete {{ f.name }}" title="Delete file">{{ icon('trash') }}</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <strong>No curriculum files yet</strong>
+        <p>Upload a syllabus PDF or text file. Until then, lessons follow general grade-level practice.</p>
+      </div>
+    {% endif %}
+  </section>
+
+  <aside class="stack">
+    <section class="card" aria-labelledby="upload-title">
+      <header class="card-header"><h2 class="card-title" id="upload-title">Add curriculum</h2></header>
+      <form class="card-body stack" id="upload-form" method="post" action="{{ url_for('upload') }}" enctype="multipart/form-data"
+            data-max-mb="{{ cfg.MAX_UPLOAD_MB }}" data-loading="Uploading and indexing…" data-loading-text="Reading the file and adding its passages to the vector store." novalidate>
+        <label class="dropzone" data-dropzone>
+          {{ icon('upload') }}
+          <strong>Choose a file or drop it here</strong>
+          <span class="xsmall muted">PDF or TXT · up to {{ cfg.MAX_UPLOAD_MB }} MB</span>
+          <span class="chosen-file" data-chosen-file></span>
+          <input type="file" name="file" accept=".pdf,.txt" required data-file-input aria-describedby="upload-error">
+        </label>
+        <p class="field-error" id="upload-error" data-upload-error></p>
+        <div class="field">
+          <label class="field-label" for="upload-grade">Grade of this file</label>
+          <select class="input" id="upload-grade" name="grade">
+            <option value="auto">Detect from file name or text</option>
+            {% for g in grades %}<option value="{{ g }}">Grade {{ g }}</option>{% endfor %}
+          </select>
+          <p class="field-hint">Tip: include the grade in the file name, e.g. <code>maths_grade3_fractions.pdf</code>.</p>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">{{ icon('upload') }}Upload and index</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="card-body stack-sm small">
+        <h2 class="card-title">Good to know</h2>
+        <ul class="muted">
+          <li>Scanned PDFs without selectable text cannot be used - run OCR first.</li>
+          <li>Password-protected PDFs must be unlocked before uploading.</li>
+          <li>Uploading a file with the same name replaces the old version.</li>
+          <li>Files marked <strong>Demo</strong> are sample material, not an official syllabus.</li>
+        </ul>
+      </div>
+    </section>
+  </aside>
+</div>
+{% endblock %}
+
+{% block scripts %}<script src="{{ url_for('static', filename='js/curriculum.js') }}"></script>{% endblock %}

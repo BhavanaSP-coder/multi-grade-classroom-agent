@@ -1,0 +1,25 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Computer Science
+Grade: 5
+Unit: Internet Basics, Online Safety and Grid Coding
+
+Learning outcomes (demo)
+- Explains what the internet is and some of its uses.
+- Follows online safety rules: never share passwords or personal details with strangers.
+- Writes instructions (forward, turn left, turn right) to move on a grid.
+- Uses loops and debugging in grid challenges.
+
+Suggested low-resource activities (demo)
+1. Grid game: draw a grid on the floor; a child 'robot' follows coded arrows to reach the goal.
+2. Safety scenarios: groups discuss what to do if a stranger asks for personal details online.
+3. Uses of the internet: list how families in the village use mobile internet.
+4. Code cards: write the shortest code to reach a target using repeat.
+
+Assessment ideas (demo)
+- Write the code to move from start to goal on the grid.
+- Name two online safety rules.
+- Find and fix the bug in the grid code.
+
+Teacher notes (demo)
+Discuss online safety even if children only use family mobile phones.

@@ -1,0 +1,26 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Mathematics
+Grade: 2
+Unit: Halves and Quarters
+
+Learning outcomes (demo)
+- Identifies one half and one quarter of a whole shape (circle, square, rectangle) when the parts are equal.
+- Divides a collection of objects (up to 20) into 2 or 4 equal groups.
+- Explains why parts must be equal to be called halves or quarters.
+- Reads and draws pictures for "half" and "quarter"; begins to see the symbols 1/2 and 1/4 as names for these pictures.
+- Recognises that two quarters make one half and four quarters make one whole, using paper folding.
+
+Suggested low-resource activities (demo)
+1. Fold and name: fold a paper square once (halves) and again (quarters). Open it and count the equal parts. Shade one quarter.
+2. Sharing in groups: share 12 sticks among 4 children. How many sticks does each child get? This is one quarter of the sticks.
+3. Blackboard equal or not equal: the teacher draws shapes cut into parts, some equal and some not. Children show thumbs up for equal parts and thumbs down for unequal parts.
+4. Chapati or rangoli drawing: draw a circle on the slate and divide it into 4 equal parts.
+
+Assessment ideas (demo)
+- Shade one half of the rectangle. Shade one quarter of the circle.
+- Tick the shape that is divided into equal parts.
+- 8 mangoes are shared equally by 2 children. How many does each get?
+
+Teacher notes (demo)
+Many children think any two pieces are "halves". Repeatedly ask "Are the parts equal?" Use folding so children can check equality by matching edges. Keep numbers small and use concrete objects before drawings.

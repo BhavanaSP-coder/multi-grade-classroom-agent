@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Multi-Grade Classroom{% endblock %} · Multi-Grade Classroom</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  {# Noto fonts render Kannada and Devanagari text correctly in the browser #}
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
+  {% block styles %}{% endblock %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+</head>
+<body>
+  {% from "components/icons.html" import icon %}
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="app">
+    {% include "components/navigation.html" %}
+    <div class="nav-backdrop" data-nav-close hidden></div>
+
+    <div class="shell-main">
+      <header class="topbar">
+        <button type="button" class="menu-button" data-nav-toggle aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation">{{ icon('menu') }}</button>
+        <a class="brand" href="{{ url_for('dashboard') }}"><span class="brand-mark" aria-hidden="true">MG</span><span class="brand-name">Multi-Grade Classroom</span></a>
+      </header>
+
+      <main id="main" class="content">
+        {% include "components/notifications.html" %}
+        {% block content %}{% endblock %}
+      </main>
+
+      <footer class="app-footer">AI-generated teaching material - always review it before using it in class.</footer>
+    </div>
+  </div>
+
+  <div class="loading-overlay" data-loading-overlay hidden>
+    <div class="loading-box" role="alertdialog" aria-live="assertive" aria-label="Working">
+      <div class="spinner" aria-hidden="true"></div>
+      <div>
+        <p><strong data-loading-title>Working…</strong></p>
+        <p class="small muted" data-loading-text>This usually takes a few seconds.</p>
+      </div>
+    </div>
+  </div>
+
+  <dialog class="modal" data-confirm-dialog aria-labelledby="confirm-title">
+    <form method="dialog">
+      <div class="modal-body">
+        <h2 id="confirm-title" data-confirm-title>Are you sure?</h2>
+        <p class="small muted" data-confirm-text></p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" value="cancel">Cancel</button>
+        <button class="btn btn-primary" value="ok" data-confirm-ok>Confirm</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

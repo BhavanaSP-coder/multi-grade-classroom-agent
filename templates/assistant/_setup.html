@@ -1,0 +1,286 @@
+{% from "components/icons.html" import icon %}
+{% if setup_errors %}
+  <div class="alert alert-error" role="alert">
+    <div class="alert-body">
+      <p class="alert-title">Your changes have not been saved yet. Please fix:</p>
+      <ul>{% for e in setup_errors %}<li>{{ e }}</li>{% endfor %}</ul>
+    </div>
+  </div>
+{% endif %}
+
+<form method="post" action="{{ url_for('assistant.save_setup', cid=p.id) }}" id="setup-form" class="stack mt-4" novalidate>
+  <p class="alert alert-error" data-setup-blocked role="alert" hidden></p>
+
+  <div class="setup-layout">
+    {# ---------------- A. Class information + break schedule ---------------- #}
+    <section class="card" aria-labelledby="class-info-title">
+      <header class="card-header"><h2 class="card-title" id="class-info-title">Class information</h2></header>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="field">
+            <label class="field-label" for="s-grade">Grade</label>
+            <input class="input" id="s-grade" name="grade" type="number" min="1" max="12" value="{{ p.grade }}">
+          </div>
+          <div class="field">
+            <label class="field-label" for="s-section">Section</label>
+            <input class="input" id="s-section" name="section" value="{{ p.section }}" maxlength="10">
+          </div>
+          <div class="field">
+            <label class="field-label" for="s-students">Students</label>
+            <input class="input" id="s-students" name="num_students" type="number" min="1" max="200" value="{{ p.num_students }}">
+          </div>
+          <div class="field">
+            <label class="field-label" for="s-start">School starts</label>
+            <input class="input" id="s-start" name="start_time" type="time" value="{{ p.start_time }}" data-start-time>
+          </div>
+          <div class="field">
+            <label class="field-label" for="s-periods">Periods per day</label>
+            <select class="input" id="s-periods" name="num_periods" data-periods>
+              {% for n in range(min_periods, max_periods + 1) %}<option value="{{ n }}" {{ 'selected' if p.num_periods == n }}>{{ n }} {{ 'period' if n == 1 else 'periods' }}</option>{% endfor %}
+              {% if p.num_periods > max_periods %}<option value="{{ p.num_periods }}" selected>{{ p.num_periods }} periods (over limit)</option>{% endif %}
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label" for="s-length">Period length</label>
+            <span class="input-suffix"><input class="input" id="s-length" name="period_minutes" type="number" min="20" max="120" value="{{ p.period_minutes }}" data-period-length><span>min</span></span>
+          </div>
+        </div>
+        {% if p.num_periods > max_periods %}
+          <p class="field-error mt-2">This class was set up with {{ p.num_periods }} periods. The maximum is {{ max_periods }} per day: choose fewer periods and review the breaks below.</p>
+        {% endif %}
+
+        <fieldset class="field mt-4">
+          <legend class="field-label">Working days</legend>
+          <div class="chip-group">
+            {% for d in all_days %}
+              <label class="chip"><input type="checkbox" name="working_days" value="{{ d }}" {{ 'checked' if d in p.working_days }}><span>{{ day_names[d][:3] }}</span></label>
+            {% endfor %}
+          </div>
+        </fieldset>
+
+        {# ---------- Break schedule ---------- #}
+        {% set positions = valid_break_positions(p.num_periods) %}
+        <div class="subsection breaks" data-break-schedule data-min-break="{{ min_break }}" data-max-break="{{ max_break }}">
+          <div class="subsection-header">
+            <div>
+              <h3>Break schedule</h3>
+              <p class="xsmall muted">Add breaks between periods throughout the school day.</p>
+            </div>
+            <span class="xsmall muted" data-break-count>{{ p.breaks|length }} of {{ positions|length }} positions used</span>
+          </div>
+
+          <div class="row-list-head" aria-hidden="true"><span>Break name</span><span>After period</span><span>Duration</span><span></span></div>
+          <div data-break-rows>
+            {% set ns = namespace(used=[]) %}
+            {% for b in p.breaks %}
+              {% set bad_pos = b.after_period not in positions %}
+              {% set dup = not bad_pos and b.after_period in ns.used %}
+              {% if not bad_pos and not dup %}{% set ns.used = ns.used + [b.after_period] %}{% endif %}
+              <div class="row-item{{ ' is-invalid' if bad_pos or dup }}" data-break-row>
+                <input class="input" name="br_name" value="{{ b.name }}" maxlength="30" aria-label="Break name" placeholder="e.g. Lunch">
+                <select class="input" name="br_after" aria-label="After period" data-break-after>
+                  {% for n in positions %}<option value="{{ n }}" {{ 'selected' if n == b.after_period }}>After period {{ n }}</option>{% endfor %}
+                  {% if bad_pos %}<option value="{{ b.after_period }}" selected>Period {{ b.after_period }} (invalid)</option>{% endif %}
+                </select>
+                <span class="input-suffix"><input class="input" name="br_minutes" type="number" min="{{ min_break }}" max="{{ max_break }}" value="{{ b.minutes }}" aria-label="Duration in minutes" data-break-minutes><span>min</span></span>
+                <button type="button" class="btn btn-icon" data-break-remove aria-label="Remove {{ b.name }}" title="Remove break">{{ icon('trash') }}</button>
+                <p class="row-msg" data-break-msg>
+                  {%- if bad_pos -%}
+                    {% if positions %}The day has {{ p.num_periods }} periods, so a break cannot follow period {{ b.after_period }}. Choose another position or remove this break.{% else %}A one-period day has no gap for a break. Remove this break or add periods.{% endif %}
+                  {%- elif dup -%}Another break already follows period {{ b.after_period }}. Choose a different position.{%- endif -%}
+                </p>
+              </div>
+            {% endfor %}
+          </div>
+          <p class="small muted" data-break-empty {% if p.breaks %}hidden{% endif %}>No breaks yet.</p>
+
+          <template data-break-template>
+            <div class="row-item" data-break-row>
+              <input class="input" name="br_name" value="Break" maxlength="30" aria-label="Break name" placeholder="e.g. Lunch">
+              <select class="input" name="br_after" aria-label="After period" data-break-after></select>
+              <span class="input-suffix"><input class="input" name="br_minutes" type="number" min="{{ min_break }}" max="{{ max_break }}" value="10" aria-label="Duration in minutes" data-break-minutes><span>min</span></span>
+              <button type="button" class="btn btn-icon" data-break-remove aria-label="Remove break" title="Remove break">{{ icon('trash') }}</button>
+              <p class="row-msg" data-break-msg></p>
+            </div>
+          </template>
+
+          <div class="cluster mt-2">
+            <button type="button" class="btn btn-ghost btn-sm" data-break-add {{ 'disabled' if p.breaks|length >= positions|length }}>{{ icon('plus') }}Add break</button>
+            <span class="xsmall muted" data-break-hint>
+              {%- if not positions %}A one-period day has no gaps between periods, so no break can be added.
+              {%- elif p.breaks|length >= positions|length %}Every gap between periods already has a break ({{ positions|length }} for {{ p.num_periods }} periods).{% endif -%}
+            </span>
+          </div>
+
+          {% set end = school_day_end(p) %}
+          <div class="day-summary" aria-live="polite">
+            <p class="small" data-day-end>School day ends at <strong>{{ fmt12(end) if end is not none else '-' }}</strong>.</p>
+            <p class="xsmall muted" data-day-detail>{{ p.num_periods }} × {{ p.period_minutes }} min of teaching + {{ p.breaks|selectattr('after_period', 'in', positions)|sum(attribute='minutes') }} min of breaks</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {# ---------------- C. Attention pattern ---------------- #}
+    <section class="card" aria-labelledby="attention-title">
+      <header class="card-header">
+        <div>
+          <h2 class="card-title" id="attention-title">When does this class learn best?</h2>
+          <p class="card-subtitle">Your observations, not a measurement. Feedback refines them over time.</p>
+        </div>
+      </header>
+      <div class="card-body">
+        <input type="hidden" name="att_count" value="{{ p.attention|length }}">
+        <div class="attention-rows">
+          {% for w in p.attention %}
+            {% set i = loop.index0 %}
+            <fieldset class="attention-row">
+              <legend class="sr-only">Attention from {{ w.start }} to {{ w.end }}</legend>
+              <span aria-hidden="true">{{ w.start }}-{{ w.end }}</span>
+              <input type="hidden" name="att_start_{{ i }}" value="{{ w.start }}">
+              <input type="hidden" name="att_end_{{ i }}" value="{{ w.end }}">
+              <div class="level-picker">
+                {% for lvl in [1, 2, 3, 4, 5] %}
+                  <label title="{{ attention_labels[lvl] }}"><input type="radio" name="att_level_{{ i }}" value="{{ lvl }}" {{ 'checked' if w.level == lvl }}><span>{{ attention_labels[lvl] }}</span></label>
+                {% endfor %}
+              </div>
+            </fieldset>
+          {% endfor %}
+        </div>
+        <p class="xsmall muted mt-3">Time slots follow the school day. After changing periods or breaks, save to update them.</p>
+        {% if flat_attention %}<p class="warning-text mt-2">Every time slot has the same level, so the assistant can only balance subjects. Mark when your class is most and least focused.</p>{% endif %}
+        {% if ctx.insights.n_entries %}
+          <div class="mt-4 stack-sm">
+            <h3 class="section-title">Used by the scheduler (your level, adjusted by feedback)</h3>
+            <div class="cluster">
+              {% for per in ctx.periods %}
+                {% set eff = ctx.insights.period_effective.get(per.index, per.base_attention) %}
+                <span class="attention-tag att-{{ eff|round|int }}" title="{{ per.label }}">P{{ per.index }}: {{ attention_label(eff) }}{{ ' *' if eff != per.base_attention }}</span>
+              {% endfor %}
+            </div>
+            <p class="xsmall muted">* changed by recorded feedback</p>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+
+    {# ---------------- B. Subjects ---------------- #}
+    <section class="card span-all" aria-labelledby="subjects-title">
+      <header class="card-header">
+        <div>
+          <h2 class="card-title" id="subjects-title">Subjects and cognitive load</h2>
+          <p class="card-subtitle">High = deep concentration, Medium = regular study, Low = activity or creative work. Change any classification - difficulty varies by grade and topic.</p>
+        </div>
+        {% set total = p.subjects|sum(attribute='periods_per_week') %}
+        {% set slots = p.num_periods * p.working_days|length - p.fixed|length %}
+        <span class="demand {{ 'over' if total > slots }}" data-demand data-slots="{{ slots }}">{{ total }} of {{ slots }} weekly periods used{{ ' - too many' if total > slots }}</span>
+      </header>
+      <div class="card-body subjects">
+        <div class="row-list-head" aria-hidden="true"><span>Subject</span><span>Cognitive load</span><span>Periods / week</span><span>Max / day</span><span>Teacher (optional)</span><span></span></div>
+        <div data-row-list="subjects">
+          {% for s in p.subjects %}
+            <div class="row-item">
+              <input class="input" name="subj_name" value="{{ s.name }}" list="subject-list" aria-label="Subject name">
+              <select class="input load-select load-{{ s.load }}" name="subj_load" aria-label="Cognitive load" data-load-select>
+                {% for l in ['high', 'medium', 'low'] %}<option value="{{ l }}" {{ 'selected' if s.load == l }}>{{ load_labels[l] }}</option>{% endfor %}
+              </select>
+              <input class="input" name="subj_ppw" type="number" min="0" max="40" value="{{ s.periods_per_week }}" aria-label="Periods per week" data-ppw>
+              <input class="input" name="subj_max" type="number" min="1" max="4" value="{{ s.max_per_day }}" aria-label="Maximum per day">
+              <input class="input" name="subj_teacher" value="{{ s.teacher }}" placeholder="Teacher name" aria-label="Teacher">
+              <button type="button" class="btn btn-icon" data-remove-row aria-label="Remove {{ s.name }}" title="Remove subject">{{ icon('trash') }}</button>
+            </div>
+          {% endfor %}
+        </div>
+        <template data-row-template="subjects">
+          <div class="row-item">
+            <input class="input" name="subj_name" list="subject-list" placeholder="Subject" aria-label="Subject name">
+            <select class="input load-select load-medium" name="subj_load" aria-label="Cognitive load" data-load-select>
+              <option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option>
+            </select>
+            <input class="input" name="subj_ppw" type="number" min="0" max="40" value="2" aria-label="Periods per week" data-ppw>
+            <input class="input" name="subj_max" type="number" min="1" max="4" value="1" aria-label="Maximum per day">
+            <input class="input" name="subj_teacher" placeholder="Teacher name" aria-label="Teacher">
+            <button type="button" class="btn btn-icon" data-remove-row aria-label="Remove subject" title="Remove subject">{{ icon('trash') }}</button>
+          </div>
+        </template>
+        <datalist id="subject-list">{% for s in subject_choices %}<option value="{{ s }}">{% endfor %}</datalist>
+        <button type="button" class="btn btn-ghost btn-sm mt-2" data-add-row="subjects">{{ icon('plus') }}Add subject</button>
+      </div>
+    </section>
+
+    {# ---------------- Availability + fixed activities ---------------- #}
+    <section class="card" aria-labelledby="unav-title">
+      <header class="card-header">
+        <div>
+          <h2 class="card-title" id="unav-title">Teacher availability</h2>
+          <p class="card-subtitle">Periods when a teacher cannot take this class, e.g. "1-2" or "3,5". Approved timetables of your other classes are checked automatically.</p>
+        </div>
+      </header>
+      <div class="card-body unavailability">
+        <div class="row-list-head" aria-hidden="true"><span>Teacher</span><span>Day</span><span>Periods</span><span></span></div>
+        <div data-row-list="unav">
+          {% for u in p.unavailability %}
+            <div class="row-item">
+              <input class="input" name="un_teacher" value="{{ u.teacher }}" list="teacher-list" aria-label="Teacher">
+              <select class="input" name="un_day" aria-label="Day">{% for d in all_days %}<option {{ 'selected' if d == u.day }}>{{ d }}</option>{% endfor %}</select>
+              <input class="input" name="un_periods" value="{{ u.periods|join(',') }}" aria-label="Periods">
+              <button type="button" class="btn btn-icon" data-remove-row aria-label="Remove unavailability">{{ icon('trash') }}</button>
+            </div>
+          {% endfor %}
+        </div>
+        <template data-row-template="unav">
+          <div class="row-item">
+            <input class="input" name="un_teacher" list="teacher-list" aria-label="Teacher">
+            <select class="input" name="un_day" aria-label="Day">{% for d in all_days %}<option>{{ d }}</option>{% endfor %}</select>
+            <input class="input" name="un_periods" placeholder="1-2" aria-label="Periods">
+            <button type="button" class="btn btn-icon" data-remove-row aria-label="Remove unavailability">{{ icon('trash') }}</button>
+          </div>
+        </template>
+        <datalist id="teacher-list">{% for t in p.subjects|map(attribute='teacher')|select|unique %}<option value="{{ t }}">{% endfor %}</datalist>
+        <button type="button" class="btn btn-ghost btn-sm mt-2" data-add-row="unav">{{ icon('plus') }}Add unavailability</button>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="fixed-title">
+      <header class="card-header">
+        <div>
+          <h2 class="card-title" id="fixed-title">Fixed activities</h2>
+          <p class="card-subtitle">Things that always happen at a set time (assembly, library, club). They are never moved.</p>
+        </div>
+      </header>
+      <div class="card-body fixed">
+        <div class="row-list-head" aria-hidden="true"><span>Day</span><span>Period</span><span>Activity</span><span></span></div>
+        <div data-row-list="fixed">
+          {% for f in p.fixed %}
+            <div class="row-item">
+              <select class="input" name="fx_day" aria-label="Day">{% for d in all_days %}<option {{ 'selected' if d == f.day }}>{{ d }}</option>{% endfor %}</select>
+              <input class="input" name="fx_period" type="number" min="1" max="{{ p.num_periods }}" value="{{ f.period }}" aria-label="Period">
+              <input class="input" name="fx_label" value="{{ f.label }}" aria-label="Activity">
+              <button type="button" class="btn btn-icon" data-remove-row aria-label="Remove fixed activity">{{ icon('trash') }}</button>
+            </div>
+          {% endfor %}
+        </div>
+        <template data-row-template="fixed">
+          <div class="row-item">
+            <select class="input" name="fx_day" aria-label="Day">{% for d in all_days %}<option>{{ d }}</option>{% endfor %}</select>
+            <input class="input" name="fx_period" type="number" min="1" max="{{ p.num_periods }}" value="1" aria-label="Period">
+            <input class="input" name="fx_label" placeholder="Library" aria-label="Activity">
+            <button type="button" class="btn btn-icon" data-remove-row aria-label="Remove fixed activity">{{ icon('trash') }}</button>
+          </div>
+        </template>
+        <button type="button" class="btn btn-ghost btn-sm mt-2" data-add-row="fixed">{{ icon('plus') }}Add fixed activity</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Save settings</button>
+    <span class="small muted">Then open <strong>2. Timetable</strong> to generate.</span>
+  </div>
+</form>
+
+<form class="mt-4" method="post" action="{{ url_for('assistant.delete_class', cid=p.id) }}"
+      data-confirm="Delete {{ p.name }}?" data-confirm-text="All of its timetables and feedback will be removed. This cannot be undone."
+      data-confirm-ok="Delete class">
+  <button class="btn btn-danger btn-sm">{{ icon('trash') }}Delete this class</button>
+</form>

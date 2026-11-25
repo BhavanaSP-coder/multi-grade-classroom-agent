@@ -1,0 +1,101 @@
+/* ==========================================================================
+   lesson.css - Lesson Planner form and lesson results page
+   ========================================================================== */
+
+/* ---------- Planner ---------- */
+.planner-form .card-body + .card-body { border-top: 1px solid var(--color-border); }
+.grade-picker { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.grade-picker .chip span { min-width: 5.5rem; justify-content: center; }
+.form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.attention-note { padding: var(--space-3) var(--space-4); font-size: var(--text-sm); border-radius: var(--radius);
+  background: var(--color-info-soft); color: #1e3a8a; }
+
+/* Accessibility settings panel (planner + results) */
+.acc-panel > summary .badge { font-weight: 600; }
+.acc-modes { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-3) 0 var(--space-4); }
+.acc-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3) var(--space-5); }
+.acc-options .checkbox span small { display: block; color: var(--color-text-muted); font-size: var(--text-xs); }
+
+/* Library summary in the planner side column */
+.library-summary li { display: flex; justify-content: space-between; gap: var(--space-2); padding: var(--space-2) 0;
+  border-top: 1px solid var(--color-border); font-size: var(--text-sm); }
+.library-summary li:first-child { border-top: none; }
+.library-summary .name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.library-summary .cluster { flex: none; flex-wrap: nowrap; gap: var(--space-1); }
+
+/* ---------- Results: header ---------- */
+.lesson-header { padding: var(--space-5); }
+.lesson-header h1 { font-size: var(--text-xl); }
+.lesson-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.big-idea { font-size: var(--text-base); }
+.whole-class { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+.whole-class div { padding: var(--space-3) var(--space-4); background: var(--color-surface-muted);
+  border: 1px solid var(--color-border); border-radius: var(--radius); font-size: var(--text-sm); }
+.whole-class h3 { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-text-muted); margin-bottom: var(--space-1); }
+
+/* ---------- Results: grade materials ---------- */
+.grade-panel .objectives { padding: var(--space-4); background: var(--color-surface-muted); border: 1px solid var(--color-border); border-radius: var(--radius); }
+.materials { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); margin-top: var(--space-4); }
+.material { padding: var(--space-4); border: 1px solid var(--color-border); border-top: 3px solid var(--accent, var(--color-primary));
+  border-radius: var(--radius); background: var(--color-surface); font-size: var(--text-sm); }
+.material h3 { font-size: var(--text-sm); color: var(--accent, var(--color-primary)); margin-bottom: var(--space-2); }
+.material.activity { --accent: #0f766e; }
+.material.worksheet { --accent: #1d4ed8; }
+.material.quiz { --accent: #7c3aed; }
+.material ol, .material ul { display: grid; gap: var(--space-1); }
+.material .lead { font-weight: 600; font-size: var(--text-base); }
+.tip { margin-top: var(--space-3); padding: var(--space-2) var(--space-3); background: var(--color-primary-soft); border-radius: var(--radius); }
+.options { list-style: none; padding: 0; color: var(--color-text-muted); }
+
+/* Answers are hidden until the teacher shows them (always printed). */
+.answer { display: block; margin-top: 0.15rem; padding-left: var(--space-2); border-left: 2px solid #c4e4df;
+  color: var(--color-success); font-size: var(--text-xs); }
+.answers-hidden .answer, .answers-hidden .answer-key { display: none; }
+.answer-key { margin-top: var(--space-3); padding-top: var(--space-2); border-top: 1px dashed var(--color-border); }
+
+/* ---------- Accessible worksheet preview ---------- */
+.acc-preview { margin-top: var(--space-5); border: 1px solid #d9d2f5; border-radius: var(--radius-lg); overflow: hidden; }
+.acc-preview > header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-2);
+  padding: var(--space-2) var(--space-4); background: #f5f3ff; font-size: var(--text-sm); }
+.dys-sheet { font-family: var(--font-readable); font-size: 1.05rem; line-height: 1.6; letter-spacing: 0.01em;
+  word-spacing: 0.06em; color: #111827; background: #fffdf8; padding: var(--space-6); max-width: 52rem; }
+.dys-sheet.dys-large { font-size: 1.25rem; }
+.dys-sheet.dys-spaced { line-height: 1.9; }
+.dys-sheet.dys-spaced p, .dys-sheet.dys-spaced li { margin-bottom: 0.6em; }
+.dys-sheet.dys-plain { background: #fff; }
+.dys-sheet h3 { font-size: 1.35em; margin-bottom: 0.5em; }
+.dys-sheet h4 { font-size: 1.1em; margin: 0.4em 0; }
+.dys-goal { font-weight: 700; margin: 0.6em 0; }
+.dys-tips { list-style: "– "; padding-left: 1.2em; margin-bottom: 1em; }
+.dys-example { border-left: 4px solid #a78bfa; padding: 0.5em 1em; margin: 1em 0; background: #f5f3ff; }
+.dys-plain .dys-example { background: transparent; }
+.dys-question { margin: 1.4em 0; }
+.dys-separated { border-top: 2px solid var(--color-border-strong); padding-top: 1em; }
+.dys-q { font-weight: 700; margin: 0.5em 0; }
+.dys-hint { border: 1px dashed var(--color-text-subtle); border-radius: var(--radius); padding: 0.4em 0.7em; font-size: 0.95em; color: #334155; }
+.dys-plain .dys-hint { border: none; padding-left: 0; }
+.dys-lines { height: calc(var(--lines, 3) * 2.2em); margin: 0.6em 0;
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(2.2em - 1px), #64748b calc(2.2em - 1px), #64748b 2.2em); }
+.dys-lines[data-lines="5"] { --lines: 5; }
+.dys-other { font-size: 0.9em; color: var(--color-text-muted); }
+.dys-teacher-note { font-size: 0.85em; color: #6d28d9; margin-top: 1em; }
+mark.kw { background: #fff1a8; font-weight: 700; padding: 0 0.15em; border-radius: 3px; color: inherit; }
+
+/* ---------- Curriculum sources (RAG) ---------- */
+.source { border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; }
+.source header { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3);
+  background: var(--color-surface-muted); border-bottom: 1px solid var(--color-border); font-size: var(--text-sm); }
+.source-label { font-family: ui-monospace, Consolas, monospace; font-weight: 700; color: var(--color-primary); }
+.source pre { margin: 0; padding: var(--space-3); white-space: pre-wrap; font: inherit; font-size: var(--text-sm); color: var(--color-secondary); }
+
+/* ---------- Rotation timetable (multi-grade teacher rotation) ---------- */
+.rotation td.mode-with_teacher { background: var(--load-low); }
+.rotation td.mode-independent { background: var(--color-info-soft); }
+.rotation td.mode-whole_class { background: var(--load-medium); }
+.mode-label { display: block; font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-text-muted); }
+
+/* ---------- Inline editing ---------- */
+.edit-bar { position: sticky; top: 0; z-index: 40; }
+body.editing [data-path] { outline: 1px dashed #d97706; outline-offset: 2px; border-radius: 2px; cursor: text; }
+body.editing [data-path]:focus { outline: 2px solid #b45309; background: var(--color-warning-soft); }
+body.editing [data-path].edited { background: #fef3c7; }

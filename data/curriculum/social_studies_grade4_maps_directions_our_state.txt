@@ -1,0 +1,25 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Social Studies
+Grade: 4
+Unit: Maps, Directions and Our State
+
+Learning outcomes (demo)
+- Uses the four main directions (North, South, East, West) to locate places.
+- Reads a simple map using a key and symbols.
+- Locates their district and state on a map of India.
+- Names the capital and some districts of their state.
+
+Suggested low-resource activities (demo)
+1. Direction game: stand in the ground facing the sunrise and name the directions.
+2. Map key: make symbols for river, road, railway, school.
+3. State puzzle: cut an outline map into districts and reassemble it.
+4. Find on map: locate the state capital and the nearest river.
+
+Assessment ideas (demo)
+- In which direction does the sun rise?
+- Use the map key to find the railway line.
+- Name the capital of your state.
+
+Teacher notes (demo)
+Use the state map available in school. Teachers should add local districts and rivers.

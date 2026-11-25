@@ -1,0 +1,29 @@
+# --- Secrets: never commit ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# --- Generated data (rebuilt locally) ---
+vectorstore/*
+!vectorstore/.gitkeep
+output/pdfs/*
+!output/pdfs/.gitkeep
+output/lessons/
+data/adaptive/
+data/uploads/*
+!data/uploads/.gitkeep
+
+# --- Editors / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.claude/

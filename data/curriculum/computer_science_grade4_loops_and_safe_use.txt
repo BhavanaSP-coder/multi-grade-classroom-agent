@@ -1,0 +1,25 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Computer Science
+Grade: 4
+Unit: Repeating Steps (Loops) and Safe Use
+
+Learning outcomes (demo)
+- Uses 'repeat' to shorten instructions (loops).
+- Knows basic rules for safe and healthy computer use (posture, screen time).
+- Understands what typing and saving a document mean.
+- Finds and fixes mistakes in a set of instructions (debugging).
+
+Suggested low-resource activities (demo)
+1. Loop dance: 'repeat 4 times: clap, jump' instead of writing the steps eight times.
+2. Bug hunt: find the wrong step in instructions to draw a square.
+3. Safe use poster: good posture and breaks from screens.
+4. Typing practice on a paper keyboard or a device if available.
+
+Assessment ideas (demo)
+- Rewrite 'step, step, step, step' using repeat.
+- Find the mistake in the given instructions.
+- Write two rules for safe computer use.
+
+Teacher notes (demo)
+Debugging teaches that mistakes are normal and can be fixed.

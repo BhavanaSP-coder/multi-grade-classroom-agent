@@ -1,0 +1,26 @@
+{% from "components/icons.html" import icon %}
+{% set section = 'assistant' if request.blueprint == 'assistant'
+   else 'curriculum' if request.endpoint in ('curriculum', 'upload', 'rebuild_index', 'delete_curriculum_file')
+   else 'planner' if request.endpoint in ('planner', 'generate', 'sample', 'lesson')
+   else 'dashboard' if request.endpoint == 'dashboard' else '' %}
+<aside class="sidebar" id="sidebar" aria-label="Main navigation">
+  <a class="brand" href="{{ url_for('dashboard') }}">
+    <span class="brand-mark" aria-hidden="true">MG</span>
+    <span class="brand-name">Multi-Grade Classroom<small>Lesson &amp; timetable planner</small></span>
+  </a>
+  <nav class="nav">
+    <ul>
+      {% for key, endpoint, label, ic in [
+          ('dashboard', 'dashboard', 'Dashboard', 'dashboard'),
+          ('planner', 'planner', 'Lesson Planner', 'lesson'),
+          ('assistant', 'assistant.dashboard', 'Adaptive Classroom Assistant', 'calendar'),
+          ('curriculum', 'curriculum', 'Curriculum Library', 'library')] %}
+        <li><a href="{{ url_for(endpoint) }}" {% if section == key %}aria-current="page"{% endif %}>{{ icon(ic) }}<span>{{ label }}</span></a></li>
+      {% endfor %}
+    </ul>
+  </nav>
+  <div class="sidebar-footer">
+    {% if api_key_set %}<span class="status-dot"></span>AI connected · {{ cfg.GROQ_MODEL }}
+    {% else %}<span class="status-dot off"></span>Groq API key missing in .env{% endif %}
+  </div>
+</aside>

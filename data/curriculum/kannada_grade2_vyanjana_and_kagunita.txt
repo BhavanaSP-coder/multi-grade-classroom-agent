@@ -1,0 +1,25 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Kannada
+Grade: 2
+Unit: ವ್ಯಂಜನಗಳು ಮತ್ತು ಕಾಗುಣಿತ (Consonants and Vowel Signs)
+
+Learning outcomes (demo)
+- Recognises and writes the Kannada consonants (ವ್ಯಂಜನಗಳು).
+- Forms ಕಾಗುಣಿತ: adds vowel signs to consonants (ಕ ಕಾ ಕಿ ಕೀ ...).
+- Reads two- and three-letter words such as ನೀರು, ಹಸು, ನಾಯಿ, ಬೆಕ್ಕು.
+- Copies short words neatly.
+
+Suggested low-resource activities (demo)
+1. Kagunita chart: read ಕ ಕಾ ಕಿ ಕೀ aloud row by row.
+2. Letter cards: make words by joining cards (ಹ + ಸು = ಹಸು).
+3. Word ladder: change one letter to make a new word.
+4. Animal words: draw an animal and write its name.
+
+Assessment ideas (demo)
+- Write the ಕಾಗುಣಿತ of ಮ.
+- Read and draw: ನಾಯಿ, ಬೆಕ್ಕು.
+- Fill in the missing letter: ನೀ__.
+
+Teacher notes (demo)
+Practise a few consonants each day; revise earlier letters often.

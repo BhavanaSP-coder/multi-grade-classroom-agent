@@ -1,0 +1,25 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Hindi
+Grade: 4
+Unit: सर्वनाम और क्रिया (Pronouns and Verbs)
+
+Learning outcomes (demo)
+- Identifies संज्ञा, सर्वनाम (pronouns) and क्रिया (verbs) in sentences.
+- Changes words between एकवचन and बहुवचन (singular and plural).
+- Reads a lesson and answers questions in full sentences.
+- Uses new words in their own sentences.
+
+Suggested low-resource activities (demo)
+1. Replace the noun: change 'सीता खेलती है' to 'वह खेलती है'.
+2. Verb mime: a child acts खाना or दौड़ना and others write the verb.
+3. Plural game: teacher says लड़का, children say लड़के.
+4. Word wall of new words from each lesson.
+
+Assessment ideas (demo)
+- Underline the सर्वनाम: वह स्कूल जाता है।
+- Write the plural of किताब and लड़की.
+- Answer two questions about the lesson.
+
+Teacher notes (demo)
+Link grammar to sentences children already use; avoid long rule lists.

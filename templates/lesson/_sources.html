@@ -1,0 +1,37 @@
+{# Curriculum chunks retrieved by RAG for this lesson. #}
+<details class="disclosure" id="sources">
+  <summary>
+    <span>Retrieved Curriculum Sources (RAG)</span>
+    <span class="badge">{{ r.retrieval.sources|length }} passage{{ '' if r.retrieval.sources|length == 1 else 's' }}</span>
+  </summary>
+  <div class="disclosure-body stack">
+    <p class="xsmall muted">Query: <code>{{ r.retrieval.query }}</code> · searched separately for each grade ·
+      passages below relevance {{ '%.2f'|format(min_relevance) }} are not used.</p>
+
+    {% if r.retrieval.error %}<div class="alert alert-error"><p class="alert-body">{{ r.retrieval.error }}</p></div>{% endif %}
+
+    {% if not r.retrieval.sources %}
+      <div class="alert alert-warning"><p class="alert-body"><strong>No relevant curriculum source was retrieved.</strong>
+        The lesson follows general grade-level practice - check it against your syllabus, or add curriculum files for this topic.</p></div>
+    {% else %}
+      <div class="cluster">
+        {% for g in r.request.grades %}
+          {% set labels = r.retrieval.labels_for_grade(g) %}
+          <span class="badge {{ 'badge-success' if labels else 'badge-warning' }}">Grade {{ g }}: {{ labels|join(', ') if labels else 'no source' }}</span>
+        {% endfor %}
+      </div>
+      {% for s in r.retrieval.sources %}
+        <article class="source">
+          <header>
+            <span class="source-label">[{{ s.label }}]</span>
+            <strong>{{ s.source }}{% if s.page %} · page {{ s.page }}{% endif %}</strong>
+            <span class="badge">{{ s.grade_label }}</span>
+            <span class="badge badge-info">Relevance {{ '%.2f'|format(s.score) }}</span>
+            {% if s.is_demo %}<span class="badge badge-warning">Demo material - not official</span>{% endif %}
+          </header>
+          <pre>{{ s.text }}</pre>
+        </article>
+      {% endfor %}
+    {% endif %}
+  </div>
+</details>

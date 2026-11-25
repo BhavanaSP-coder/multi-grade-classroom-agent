@@ -1,0 +1,117 @@
+{% from "components/icons.html" import icon %}
+{% from "assistant/_macros.html" import timetable_grid, version_badges, why_panel %}
+
+<div class="split no-print">
+  <div class="cluster">
+    <form method="post" action="{{ url_for('assistant.generate', cid=p.id) }}"
+          data-loading="Building the timetable…" data-loading-text="Scoring candidate timetables against your class's attention pattern.">
+      <input type="hidden" name="mode" value="{{ 'regenerate' if p.current or p.proposal else 'first' }}">
+      <button class="btn btn-primary">{{ icon('refresh') }}{{ 'Regenerate proposal' if p.current or p.proposal else 'Generate timetable' }}</button>
+    </form>
+    {% if p.current %}<a class="btn btn-secondary" href="{{ url_for('assistant.pdf', cid=p.id, version='current') }}">{{ icon('download') }}Export PDF</a>{% endif %}
+    {% if p.current or p.proposal %}<button type="button" class="btn btn-secondary" data-print>{{ icon('print') }}Print</button>{% endif %}
+  </div>
+  <p class="xsmall muted">{{ 'Groq gives advice and explanations; the Python optimiser and validator decide the schedule.' if use_ai else 'AI is off or no API key: optimiser and validator only.' }}</p>
+</div>
+
+<div class="stack mt-4">
+  {% if flat_attention %}
+    <div class="alert alert-warning"><p class="alert-body">Every time slot has the same attention level. Set it in
+      <a href="#apanel-setup" data-goto-tab="setup">Setup</a> so demanding subjects go where your class focuses best.</p></div>
+  {% endif %}
+
+  {% if recs %}
+    <div class="alert alert-info"><div class="alert-body">
+      <p class="alert-title">Recommendations from your feedback</p>
+      <ul>{% for r in recs %}<li>{{ r }}</li>{% endfor %}</ul>
+      <p class="xsmall mt-2">Nothing changes until you generate a proposal and approve it.</p>
+    </div></div>
+  {% endif %}
+
+  {# Cell editor: appears when a period is selected #}
+  <section class="card cell-editor no-print" id="cell-editor" aria-label="Edit selected period" hidden>
+    <form method="post" action="{{ url_for('assistant.edit', cid=p.id) }}">
+      <input type="hidden" name="target"><input type="hidden" name="action"><input type="hidden" name="cell_a"><input type="hidden" name="cell_b">
+      <div class="selected-label">
+        <p class="xsmall muted">Selected period</p>
+        <p class="small"><strong data-ed-label>-</strong></p>
+      </div>
+      <div class="field">
+        <label class="field-label" for="ed-subject">Change to</label>
+        <select class="input" id="ed-subject" name="subject">
+          {% for s in p.subjects %}<option>{{ s.name }}</option>{% endfor %}<option>{{ free_label }}</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" data-ed-action="set">Set subject</button>
+      <button type="button" class="btn btn-secondary" data-ed-swap>{{ icon('swap') }}Swap with…</button>
+      <button type="submit" class="btn btn-secondary" data-ed-action="lock" data-ed-lock>{{ icon('lock') }}Lock</button>
+      <a class="btn btn-ghost" data-ed-lesson href="#" hidden>Plan lesson for this period</a>
+      <button type="button" class="btn btn-icon" data-ed-close aria-label="Close editor">{{ icon('close') }}</button>
+      <p class="xsmall muted hint" data-ed-hint aria-live="polite">Swap: choose "Swap with…" then click another period in the same timetable. Every change is re-checked against your constraints.</p>
+    </form>
+  </section>
+
+  {% if p.proposal %}
+    {% set v = p.proposal %}
+    <section class="card proposal" aria-labelledby="proposal-title">
+      <header class="card-header">
+        <div>
+          <h2 class="card-title" id="proposal-title">Proposed timetable</h2>
+          <p class="card-subtitle">Waiting for your approval · {{ v.created_at.strftime('%d %b %H:%M') }}{{ ' · edited' if v.source == 'edited' }}
+            {% if p.current %} · current score {{ '%.1f'|format(p.current.score) }}{% endif %}
+            {% if v.alternatives_scores %} · other candidates scored {{ v.alternatives_scores|join(', ') }}{% endif %}</p>
+          {{ version_badges(v) }}
+        </div>
+        <div class="cluster no-print">
+          <form method="post" action="{{ url_for('assistant.approve', cid=p.id) }}">
+            <button class="btn btn-primary" {% if not v.validation.ok %}disabled title="Fix the constraint errors first"{% endif %}>{{ icon('check') }}Approve</button>
+          </form>
+          <form method="post" action="{{ url_for('assistant.reject', cid=p.id) }}"><button class="btn btn-secondary">Reject</button></form>
+          <a class="btn btn-secondary" href="{{ url_for('assistant.pdf', cid=p.id, version='proposal') }}">{{ icon('download') }}PDF</a>
+        </div>
+      </header>
+      <div class="card-body stack">
+        {% if v.changes %}
+          <details class="disclosure" {% if v.changes|length <= 6 %}open{% endif %}>
+            <summary><span>{{ v.changes|length }} change{{ 's' if v.changes|length != 1 }} compared with the current timetable</span><span class="xsmall muted">dashed outline in the grid</span></summary>
+            <ul class="disclosure-body changes">{% for ch in v.changes[:20] %}<li><strong>{{ ch.slot }}</strong>: {{ ch.before }} → {{ ch.after }} <span class="muted">- {{ ch.reason }}</span></li>{% endfor %}</ul>
+          </details>
+        {% endif %}
+        {{ timetable_grid(v, 'proposal', p, ctx, lesson_link, fmt12, attention_label) }}
+        {{ why_panel(v) }}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if p.current %}
+    {% set v = p.current %}
+    <section class="card" aria-labelledby="current-title">
+      <header class="card-header">
+        <div>
+          <h2 class="card-title" id="current-title">Current timetable</h2>
+          <p class="card-subtitle">Approved {{ v.created_at.strftime('%d %b %H:%M') }}{{ ' · edited by you' if v.source == 'edited' }}. Click a period to change, swap, lock or plan its lesson.</p>
+          {{ version_badges(v) }}
+        </div>
+      </header>
+      <div class="card-body">
+        {{ timetable_grid(v, 'current', p, ctx, lesson_link, fmt12, attention_label) }}
+        <p class="legend">
+          <span><i class="legend-swatch cell load-high"></i>High load</span>
+          <span><i class="legend-swatch cell load-medium"></i>Medium</span>
+          <span><i class="legend-swatch cell load-low"></i>Low / activity</span>
+          <span><i class="legend-swatch cell load-fixed"></i>Fixed activity</span>
+          <span><i class="legend-swatch cell load-free"></i>Open period</span>
+          <span>Locked periods are kept when you regenerate.</span>
+        </p>
+        {{ why_panel(v) }}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if not p.current and not p.proposal %}
+    <section class="card empty-state">
+      <strong>No timetable yet</strong>
+      <p>Check the setup, then generate a timetable. It will appear here as a proposal for you to review.</p>
+    </section>
+  {% endif %}
+</div>

@@ -1,0 +1,83 @@
+/* ==========================================================================
+   responsive.css - breakpoints and print styles (loaded last)
+   ========================================================================== */
+
+/* ---------- Laptop / small desktop ---------- */
+@media (max-width: 1200px) {
+  .content { padding: var(--space-6); }
+  .with-aside { grid-template-columns: minmax(0, 1fr) 17rem; }
+}
+
+/* ---------- Tablet: sidebar becomes a drawer ---------- */
+@media (max-width: 1023px) {
+  .sidebar {
+    position: fixed; z-index: 60; left: 0; top: 0; bottom: 0; height: auto;
+    transform: translateX(-100%); transition: transform 0.2s ease; box-shadow: var(--shadow-lg);
+  }
+  .nav-open .sidebar { transform: none; }
+  .nav-backdrop { position: fixed; inset: 0; z-index: 55; background: rgba(15, 23, 42, 0.35); }
+  .topbar {
+    position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: var(--space-3);
+    height: 3.25rem; padding: 0 var(--space-4); background: var(--color-surface); border-bottom: 1px solid var(--color-border);
+  }
+  .topbar .brand { padding: 0; }
+  .menu-button { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius); background: var(--color-surface); }
+  .menu-button svg { width: 18px; height: 18px; }
+  .with-aside { grid-template-columns: minmax(0, 1fr); }
+  .setup-layout { grid-template-columns: minmax(0, 1fr); }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .materials { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---------- Small tablet / large phone ---------- */
+@media (max-width: 760px) {
+  .content { padding: var(--space-4); }
+  .app-footer { padding: var(--space-4); }
+  .page-header { margin-bottom: var(--space-4); }
+  .page-header h1 { font-size: var(--text-xl); }
+  .grid-2, .grid-3, .quick-actions, .whole-class, .acc-options { grid-template-columns: minmax(0, 1fr); }
+  .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .card-body { padding: var(--space-4); }
+  .card-header { padding: var(--space-3) var(--space-4); }
+  .why-list li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+
+  /* Subject rows wrap into two lines */
+  .subjects .row-list-head { display: none; }
+  .subjects .row-item { grid-template-columns: minmax(0, 1fr) 7rem 2.25rem; row-gap: var(--space-1);
+    padding: var(--space-2) 0; border-top: 1px solid var(--color-border); }
+  .subjects .row-item > :nth-child(1) { grid-column: 1 / 3; }
+  .subjects .row-item > :nth-child(6) { grid-column: 3; grid-row: 1; }
+  .subjects .row-item > :nth-child(5) { grid-column: 1 / -1; }
+}
+
+/* ---------- Phone ---------- */
+@media (max-width: 520px) {
+  .form-grid, .stats { grid-template-columns: minmax(0, 1fr); }
+  .lesson-actions .btn, .form-actions .btn { flex: 1 1 auto; }
+  .breaks .row-list-head, .unavailability .row-list-head, .fixed .row-list-head { display: none; }
+  .breaks .row-item { grid-template-columns: minmax(0, 1fr) 6.5rem 2.25rem; row-gap: var(--space-1); }
+  .breaks .row-item > :first-child { grid-column: 1 / -1; }
+  .attention-row { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
+  .level-picker span { font-size: 0.625rem; padding: 0.4rem 0.1rem; }
+  .cell-editor .field { width: 100%; }
+  .dys-sheet { padding: var(--space-4); }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  body { background: #fff; }
+  .sidebar, .topbar, .app-footer, .notifications, .no-print, .tabs, .cell-editor, .edit-bar { display: none !important; }
+  .content { max-width: none; padding: 0; }
+  .card, .disclosure { box-shadow: none; border-color: #ccc; }
+  .tab-panel[hidden] { display: block !important; }
+  .tab-panel { break-before: page; padding-top: 0; }
+  .tab-panel:first-of-type { break-before: auto; }
+  .answers-hidden .answer, .answers-hidden .answer-key { display: block; }
+  .print-only { display: block !important; }
+  .dys-sheet { background: #fff; max-width: none; }
+  .timetable td.cell { box-shadow: none !important; }
+  tr, .material, .dys-question { break-inside: avoid; }
+  a[href]::after { content: none; }
+}
+.print-only { display: none; }

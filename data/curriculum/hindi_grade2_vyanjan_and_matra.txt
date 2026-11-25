@@ -1,0 +1,25 @@
+[DEMO CURRICULUM - written for this hackathon prototype. This is NOT an official syllabus or textbook document. Replace it with your state/board curriculum files.]
+
+Subject: Hindi
+Grade: 2
+Unit: व्यंजन और मात्राएँ (Consonants and Vowel Signs)
+
+Learning outcomes (demo)
+- Recognises and writes common Hindi consonants (व्यंजन).
+- Reads words without vowel signs such as कमल, नल, जल, घर.
+- Adds मात्राएँ (vowel signs) to consonants: क का कि की.
+- Reads simple words with मात्राएँ such as पानी, माला.
+
+Suggested low-resource activities (demo)
+1. Word building: join letter cards to make कमल and नल.
+2. Matra wheel: turn a paper wheel to change the मात्रा on a letter.
+3. Read and act: read a word and show its meaning.
+4. Copy writing: copy five words neatly.
+
+Assessment ideas (demo)
+- Read the words: जल, नल, घर.
+- Add the आ मात्रा to क, ग, म.
+- Draw पानी and write the word.
+
+Teacher notes (demo)
+Start with words without मात्राएँ, then add one मात्रा at a time.
